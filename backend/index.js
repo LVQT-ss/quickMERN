@@ -71,6 +71,37 @@ app.get("/books/:id", async (request, response) => {
         response.status(500).send({message: error.message});
     }
 });
+// ROUTE UPDATE THE BOOK
+app.put("/books/:id", async (request, response) => {
+    try {
+        // Check if all fields are provided
+        if (
+            !request.body.title || 
+            !request.body.author || 
+            !request.body.publishYear
+        ) {
+            return response.status(400).send({ message: "All fields are required" });
+        }
+
+        const { id } = request.params;
+
+        // Find the book by ID and update it
+        const result = await Book.findByIdAndUpdate(id, request.body, { new: true });
+
+        // If no book is found with the provided ID
+        if (!result) {
+            return response.status(404).send({ message: "BOOK NOT FOUND" });
+        }
+
+        // Successfully updated the book
+        return response.status(200).json({ message: "Book updated successfully", updatedBook: result });
+
+    } catch (error) {
+        // Handle any errors that occurred during the process
+        console.log(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
 
 
 mongoose.connect(mongoDBURL)
