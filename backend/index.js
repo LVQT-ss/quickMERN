@@ -15,29 +15,44 @@ app.get("/", (req, res) => {
 
 // Route for savee a new book model
 app.post("/books", async (request, response) => {
-        try{
-            if(
-
-                !request.body.title || 
-                !request.body.author || 
-                !request.body.publishYear
-
-            ){
-                return response.status(400)
-                .send({message: "All fields are required"});
-
-            }
-            const newbook = {title: request.body.title, 
-                author: request.body.author,
-                publishYear: request.body.publishYear};
-            const book = await Book(newbook);
-
-            return response.status(201).send(book);
-
-        } catch(error){
-                console.log(error.message);
-                response.status(500).send({message: error.message});
+    try {
+        // Check if all required fields are present
+        if (
+            !request.body.title || 
+            !request.body.author || 
+            !request.body.publishYear
+        ) {
+            return response.status(400).send({ message: "All fields are required" });
         }
+
+        // Create a new book instance
+        const newbook = new Book({
+            title: request.body.title, 
+            author: request.body.author,
+            publishYear: request.body.publishYear
+        });
+
+        // Save the book to the database
+        const savedBook = await newbook.save();
+
+        // Respond with the saved book
+        return response.status(201).send(savedBook);
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
+
+// Route get all books 
+app.get("/books", async (request, response) => {
+    try{
+            const books= await Book.find({});
+            return response.status(200).json(books);
+    } catch(error){
+        console.log(error.message);
+        response.status(500).send({message: error.message});
+    }
 });
 
 mongoose.connect(mongoDBURL)
