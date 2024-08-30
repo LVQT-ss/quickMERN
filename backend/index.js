@@ -1,8 +1,8 @@
 import express from "express";
 import {PORT, mongoDBURL} from "./config.js"
 import mongoose from "mongoose";
-import { Book } from "./models/bookModel.js";
 
+import booksRoute from "./routes/booksRoute.js"
 const app = express();
 
 // middleware for parsing request body
@@ -13,96 +13,7 @@ app.get("/", (req, res) => {
    return res.status(234).send("welcome to Mern")
 });
 
-// Route for savee a new book model
-app.post("/books", async (request, response) => {
-    try {
-        // Check if all required fields are present
-        if (
-            !request.body.title || 
-            !request.body.author || 
-            !request.body.publishYear
-        ) {
-            return response.status(400).send({ message: "All fields are required" });
-        }
-
-        // Create a new book instance
-        const newbook = new Book({
-            title: request.body.title, 
-            author: request.body.author,
-            publishYear: request.body.publishYear
-        });
-
-        // Save the book to the database
-        const savedBook = await newbook.save();
-
-        // Respond with the saved book
-        return response.status(201).send(savedBook);
-
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
-
-// Route get all books 
-app.get("/books", async (request, response) => {
-    try{
-            const books= await Book.find({});
-            return response.status(200).json({
-
-                count: books.length,
-                data:books
-            }
-            );
-    } catch(error){
-        console.log(error.message);
-        response.status(500).send({message: error.message});
-    }
-});
-// Route get all books 
-app.get("/books/:id", async (request, response) => {
-    try{
-         const {id} = request.params;
-
-            const books= await Book.findById(id);
-            return response.status(200).json(books);
-    } catch(error){
-        console.log(error.message);
-        response.status(500).send({message: error.message});
-    }
-});
-// ROUTE UPDATE THE BOOK
-app.put("/books/:id", async (request, response) => {
-    try {
-        // Check if all fields are provided
-        if (
-            !request.body.title || 
-            !request.body.author || 
-            !request.body.publishYear
-        ) {
-            return response.status(400).send({ message: "All fields are required" });
-        }
-
-        const { id } = request.params;
-
-        // Find the book by ID and update it
-        const result = await Book.findByIdAndUpdate(id, request.body, { new: true });
-
-        // If no book is found with the provided ID
-        if (!result) {
-            return response.status(404).send({ message: "BOOK NOT FOUND" });
-        }
-
-        // Successfully updated the book
-        return response.status(200).json({ message: "Book updated successfully", updatedBook: result });
-
-    } catch (error) {
-        // Handle any errors that occurred during the process
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
-
+app.use("/books",booksRoute)
 
 mongoose.connect(mongoDBURL)
         .then(() => {
