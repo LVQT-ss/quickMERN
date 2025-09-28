@@ -1,30 +1,39 @@
-import express from "express";
-import {PORT, mongoDBURL} from "./config.js"
-import mongoose from "mongoose";
-import cors from "cors";
-import booksRoute from "./routes/booksRoute.js"
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import swaggerDocs from './utils/swagger.js';
+import authRoutes from './routes/auth.route.js';
+import tutorialRoutes from './routes/tutorial.route.js';
+import categoryRoutes from './routes/category.route.js';
+import interactionRoutes from './routes/interaction.route.js';
+import initDB from './database/init.js';
+import './models/associations.js';
+
+const port = process.env.PORT || 3000;
+dotenv.config();
 const app = express();
 
-// middleware for parsing request body
-app.use(express.json());
-// middleware for handiling cors policy
 app.use(cors());
-app.get("/", (request, response) => {
-   console.log(req)
-   return res.status(234).send("welcome to Mern")
+app.use(express.json());
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/tutorials', tutorialRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api', interactionRoutes);
+
+
+initDB().then(() => {
+    // Setup associations after database is initialized
+
+    console.log('Auto-complete scheduler started');
+
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+        // Initialize Swagger docs
+        swaggerDocs(app, port);
+    });
+}).catch(error => {
+    console.error('Invalid database connection:', error);
 });
-
-app.use("/books",booksRoute)
-
-mongoose.connect(mongoDBURL)
-        .then(() => {
-            console.log("MongoDB connected")
-            app.listen(PORT, ()=>{
-                console.log(`Server is running on port ${PORT}`);
-            });
-            
-        }
-    
-    )
-        .catch(err => console.log(err));
 
