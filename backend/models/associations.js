@@ -1,58 +1,53 @@
 import User from './User.model.js';
-import Tutorial from './Tutorial.model.js';
-import Step from './Step.model.js';
-import Category from './Category.model.js';
+import Post from './Blog.mode.js';
+import PostSection from './PostSection.model.js';
+import PostImage from './PostImage.model.js';
 import Comment from './Comment.model.js';
-import Reaction from './Reaction.model.js';
+import Category from './Category.model.js';
+import PostLike from './PostLike.model.js';
+import PostCategory from './PostCategory.model.js';
 
 
 function setupAssociations() {
-    // User - Tutorial (1:N)
-    User.hasMany(Tutorial);
-    Tutorial.belongsTo(User);
+    // users (1) -> posts (N)
+    User.hasMany(Post, { foreignKey: 'user_id' });
+    Post.belongsTo(User, { foreignKey: 'user_id' });
 
-    // Category - Tutorial (1:N)
-    Category.hasMany(Tutorial);
-    Tutorial.belongsTo(Category);
+    // posts (1) -> post_sections (N)
+    Post.hasMany(PostSection, { foreignKey: 'post_id', onDelete: 'CASCADE' });
+    PostSection.belongsTo(Post, { foreignKey: 'post_id' });
 
-    // Tutorial - Step (1:N)
-    Tutorial.hasMany(Step, { onDelete: 'CASCADE' });
-    Step.belongsTo(Tutorial);
+    // posts (1) -> post_images (N)
+    Post.hasMany(PostImage, { foreignKey: 'post_id', onDelete: 'CASCADE' });
+    PostImage.belongsTo(Post, { foreignKey: 'post_id' });
 
-    // User - Comment (1:N)
-    User.hasMany(Comment);
-    Comment.belongsTo(User);
+    // optional: post_images belongs to section
+    PostSection.hasMany(PostImage, { foreignKey: 'section_id', onDelete: 'CASCADE' });
+    PostImage.belongsTo(PostSection, { foreignKey: 'section_id' });
 
-    // Tutorial - Comment (1:N)
-    Tutorial.hasMany(Comment);
-    Comment.belongsTo(Tutorial);
+    // users (1) -> comments (N)
+    User.hasMany(Comment, { foreignKey: 'user_id' });
+    Comment.belongsTo(User, { foreignKey: 'user_id' });
 
-    // Comment - Comment (Self-referential for replies)
-    Comment.hasMany(Comment, { as: 'Replies', foreignKey: 'parentId' });
-    Comment.belongsTo(Comment, { as: 'Parent', foreignKey: 'parentId' });
+    // posts (1) -> comments (N)
+    Post.hasMany(Comment, { foreignKey: 'post_id', onDelete: 'CASCADE' });
+    Comment.belongsTo(Post, { foreignKey: 'post_id' });
 
-    // User - Reaction (1:N)
-    User.hasMany(Reaction);
-    Reaction.belongsTo(User);
+    // self-referential comment replies
+    Comment.hasMany(Comment, { as: 'Replies', foreignKey: 'parent_id' });
+    Comment.belongsTo(Comment, { as: 'Parent', foreignKey: 'parent_id' });
 
-    // Tutorial - Reaction (1:N)
-    Tutorial.hasMany(Reaction);
-    Reaction.belongsTo(Tutorial);
+    // likes: many-to-many via post_likes with composite key
+    User.belongsToMany(Post, { through: PostLike, foreignKey: 'user_id', otherKey: 'post_id', as: 'LikedPosts' });
+    Post.belongsToMany(User, { through: PostLike, foreignKey: 'post_id', otherKey: 'user_id', as: 'Likers' });
+
+    // categories: many-to-many via post_categories
+    Post.belongsToMany(Category, { through: PostCategory, foreignKey: 'post_id', otherKey: 'category_id' });
+    Category.belongsToMany(Post, { through: PostCategory, foreignKey: 'category_id', otherKey: 'post_id' });
 }
 
 
-// Unique constraint to prevent multiple reactions from same user on same tutorial
-Reaction.addHook('beforeCreate', async (reaction) => {
-    const existingReaction = await Reaction.findOne({
-        where: {
-            userId: reaction.userId,
-            tutorialId: reaction.tutorialId
-        }
-    });
-    if (existingReaction) {
-        throw new Error('User has already reacted to this tutorial');
-    }
-});
+// No per-create hook needed; unique composite index on PostLike enforces 1 like per user/post
 
 
 

@@ -4,12 +4,20 @@ import User from '../models/User.model.js';
 
 export const register = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, email, password } = req.body;
 
         // Check if user exists
         const userExists = await User.findOne({ where: { username } });
         if (userExists) {
             return res.status(400).json({ message: 'Username already exists' });
+        }
+        if (email) {
+            const emailExists = await User.findOne({ where: { email } });
+            if (emailExists) {
+                return res.status(400).json({ message: 'Email already exists' });
+            }
+        } else {
+            return res.status(400).json({ message: 'Email is required' });
         }
 
         // Hash password
@@ -18,7 +26,8 @@ export const register = async (req, res) => {
         // Create user
         const user = await User.create({
             username,
-            password: hashedPassword
+            email,
+            passwordHash: hashedPassword
         });
 
         // Generate token
@@ -42,16 +51,17 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, email, password } = req.body;
 
-        // Find user
-        const user = await User.findOne({ where: { username } });
+        // Find user by username or email
+        const where = username ? { username } : { email };
+        const user = await User.findOne({ where });
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         // Check password
-        const isValidPassword = await bcrypt.compare(password, user.password);
+        const isValidPassword = await bcrypt.compare(password, user.passwordHash);
         if (!isValidPassword) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
@@ -67,6 +77,7 @@ export const login = async (req, res) => {
             user: {
                 id: user.id,
                 username: user.username,
+                email: user.email,
                 role: user.role
             }
         });

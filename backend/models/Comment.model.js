@@ -7,25 +7,9 @@ const Comment = sequelize.define('Comment', {
         autoIncrement: true,
         primaryKey: true,
     },
-    content: {
+    body: {
         type: DataTypes.TEXT,
         allowNull: false,
-    },
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Users',
-            key: 'id'
-        }
-    },
-    tutorialId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Tutorials',
-            key: 'id'
-        }
     },
     parentId: {
         type: DataTypes.INTEGER,
@@ -34,6 +18,9 @@ const Comment = sequelize.define('Comment', {
             key: 'id'
         }
     }
+}, {
+    timestamps: true,
+    underscored: true
 });
 
 export default Comment;

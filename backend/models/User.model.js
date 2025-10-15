@@ -12,15 +12,28 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
     },
-    password: {
+    email: {
         type: DataTypes.STRING(255),
         allowNull: false,
+        unique: true,
+    },
+    passwordHash: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+        field: 'password_hash'
     },
     role: {
         type: DataTypes.ENUM('admin', 'user'),
         defaultValue: 'user',
         allowNull: false
+    },
+    bio: {
+        type: DataTypes.TEXT,
+        allowNull: true
     }
+}, {
+    timestamps: true,
+    underscored: true
 });
 
 export default User;

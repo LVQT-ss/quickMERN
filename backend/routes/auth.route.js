@@ -15,11 +15,11 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - username
- *               - password
+ *             required: [username, email, password]
  *             properties:
  *               username:
+ *                 type: string
+ *               email:
  *                 type: string
  *               password:
  *                 type: string
@@ -43,11 +43,11 @@ router.post('/register', register);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - username
- *               - password
+ *             required: [password]
  *             properties:
  *               username:
+ *                 type: string
+ *               email:
  *                 type: string
  *               password:
  *                 type: string

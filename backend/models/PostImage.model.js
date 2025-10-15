@@ -1,33 +1,31 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
 
-const Post = sequelize.define('Post', {
+const PostImage = sequelize.define('PostImage', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
-    title: {
+    imageUrl: {
         type: DataTypes.STRING,
         allowNull: false,
+        field: 'image_url'
     },
-    introduction: {
+    caption: {
         type: DataTypes.TEXT,
         allowNull: true,
     },
-    status: {
-        type: DataTypes.ENUM('draft', 'published'),
+    orderIndex: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 'draft'
-    },
-    publishedAt: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        field: 'published_at'
+        field: 'order_index'
     }
 }, {
     timestamps: true,
     underscored: true
 });
 
-export default Post;
+export default PostImage;
+
+

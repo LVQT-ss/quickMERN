@@ -15,6 +15,9 @@ const Category = sequelize.define('Category', {
     description: {
         type: DataTypes.TEXT
     }
+}, {
+    timestamps: true,
+    underscored: true
 });
 
 export default Category;
