@@ -104,7 +104,7 @@ router.get('/:id', getTutorialById);
  *       201:
  *         description: Tutorial created successfully
  */
-router.post('/', verifyToken, createTutorial);
+router.post('/', verifyToken, isAdmin, createTutorial);
 
 /**
  * @swagger
@@ -130,7 +130,7 @@ router.post('/', verifyToken, createTutorial);
  *       200:
  *         description: Tutorial updated successfully
  */
-router.put('/:id', verifyToken, updateTutorial);
+router.put('/:id', verifyToken, isAdmin, updateTutorial);
 
 /**
  * @swagger
