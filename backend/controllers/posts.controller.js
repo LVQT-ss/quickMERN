@@ -190,8 +190,12 @@ export const updateImage = async (req, res) => {
         if (req.user.role !== 'admin' && image.Post.user_id !== req.user.id) {
             return res.status(403).json({ message: 'Not authorized' });
         }
-        const { caption, order_index } = req.body;
-        await image.update({ caption, orderIndex: order_index });
+        const { caption, order_index, image_url } = req.body;
+        const updates = { };
+        if (typeof caption !== 'undefined') updates.caption = caption;
+        if (typeof order_index !== 'undefined') updates.orderIndex = order_index;
+        if (typeof image_url !== 'undefined') updates.imageUrl = image_url;
+        await image.update(updates);
         res.json(image);
     } catch (error) {
         res.status(500).json({ message: error.message });

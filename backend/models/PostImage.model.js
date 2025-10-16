@@ -7,6 +7,14 @@ const PostImage = sequelize.define('PostImage', {
         autoIncrement: true,
         primaryKey: true,
     },
+    post_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    section_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     imageUrl: {
         type: DataTypes.STRING,
         allowNull: false,
