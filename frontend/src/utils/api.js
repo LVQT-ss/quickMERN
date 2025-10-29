@@ -68,6 +68,7 @@ export const api = {
     categories: {
         create: (payload, token) => request('/categories', { method: 'POST', body: payload, token }),
         list: () => request('/categories'),
+        get: (id, token) => request(`/categories/${id}`, { token }),
         update: (id, payload, token) => request(`/categories/${id}`, { method: 'PUT', body: payload, token }),
         remove: (id, token) => request(`/categories/${id}`, { method: 'DELETE', token })
     }

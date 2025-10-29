@@ -1,15 +1,19 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom'
-import { getToken } from '../utils/auth'
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../utils/auth.jsx";
 
 function ProtectedRoute({ children }) {
-  const token = getToken()
-  if (!token) {
-    return <Navigate to="/login" replace />
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
-  return children
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 }
 
-export default ProtectedRoute
-
-
+export default ProtectedRoute;

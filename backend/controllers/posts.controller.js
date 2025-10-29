@@ -57,13 +57,21 @@ export const getPosts = async (req, res) => {
         if (status) where.status = status;
         const include = [
             { model: User, attributes: ['id', 'username'] },
+            { model: PostImage, attributes: ['id', 'imageUrl', 'caption', 'orderIndex'] },
         ];
         if (category) {
             include.push({ model: Category, through: { attributes: [] }, where: { id: category } });
         } else {
             include.push({ model: Category, through: { attributes: [] } });
         }
-        const posts = await Post.findAll({ where, include, order: [['createdAt', 'DESC']] });
+        const posts = await Post.findAll({
+            where,
+            include,
+            order: [
+                ['createdAt', 'DESC'],
+                [PostImage, 'orderIndex', 'ASC']  // Order images by their orderIndex
+            ]
+        });
         res.json(posts);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -191,7 +199,7 @@ export const updateImage = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized' });
         }
         const { caption, order_index, image_url } = req.body;
-        const updates = { };
+        const updates = {};
         if (typeof caption !== 'undefined') updates.caption = caption;
         if (typeof order_index !== 'undefined') updates.orderIndex = order_index;
         if (typeof image_url !== 'undefined') updates.imageUrl = image_url;
