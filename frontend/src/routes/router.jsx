@@ -14,6 +14,7 @@ import CategoryEditPage from "../pages/categories/edit";
 import UsersListPage from "../pages/users/list";
 import UserProfilePage from "../pages/users/profile";
 import HomePage from "../pages/HomePage";
+import About from "../pages/about";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: "/", element: <HomePage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/register", element: <RegisterPage /> },
+      { path: "/about", element: <About /> },
       { path: "/posts", element: <PostsListPage /> },
       {
         path: "/posts/new",

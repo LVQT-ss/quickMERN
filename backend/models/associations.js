@@ -1,5 +1,5 @@
 import User from './User.model.js';
-import Post from './Blog.mode.js';
+import Post from './Blog.model.js';
 import PostSection from './PostSection.model.js';
 import PostImage from './PostImage.model.js';
 import Comment from './Comment.model.js';

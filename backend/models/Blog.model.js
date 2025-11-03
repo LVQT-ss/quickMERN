@@ -15,6 +15,10 @@ const Post = sequelize.define('Post', {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+    banner: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
     status: {
         type: DataTypes.ENUM('draft', 'published'),
         allowNull: false,
@@ -23,7 +27,7 @@ const Post = sequelize.define('Post', {
     publishedAt: {
         type: DataTypes.DATE,
         allowNull: true,
-        field: 'published_at'
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: true,

@@ -36,6 +36,7 @@ const router = express.Router();
  *             properties:
  *               title: { type: string }
  *               introduction: { type: string }
+ *               banner: { type: string }
  *               status: { type: string, enum: [draft, published] }
  *               category_ids:
  *                 type: array
@@ -99,6 +100,7 @@ router.get('/posts/:id', getPostById);
  *             properties:
  *               title: { type: string }
  *               introduction: { type: string }
+ *               banner: { type: string }
  *               status: { type: string, enum: [draft, published] }
  *               publishedAt: { type: string, format: date-time }
  *     responses:

@@ -1,5 +1,5 @@
 import Category from '../models/Category.model.js';
-import Post from '../models/Blog.mode.js';
+import Post from '../models/Blog.model.js';
 import PostCategory from '../models/PostCategory.model.js';
 import { ValidationError, UniqueConstraintError } from 'sequelize';
 import { Op } from 'sequelize';

@@ -1,4 +1,4 @@
-import Post from '../models/Blog.mode.js';
+import Post from "../models/Blog.model.js";
 import User from '../models/User.model.js';
 import Category from '../models/Category.model.js';
 import PostSection from '../models/PostSection.model.js';
@@ -11,7 +11,7 @@ import sequelize from '../database/db.js';
 export const createPost = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
-        const { title, introduction, status, category_ids } = req.body;
+        const { title, introduction, banner, status, category_ids } = req.body;
         if (!req.user || !req.user.id) {
             await transaction.rollback();
             return res.status(401).json({ message: 'Unauthorized' });
@@ -24,7 +24,7 @@ export const createPost = async (req, res) => {
             await transaction.rollback();
             return res.status(400).json({ message: 'Invalid status. Use draft or published' });
         }
-        const post = await Post.create({ title, introduction, status, user_id: req.user.id }, { transaction });
+        const post = await Post.create({ title, introduction, banner, status, user_id: req.user.id }, { transaction });
 
         if (Array.isArray(category_ids) && category_ids.length > 0) {
             const categories = await Category.findAll({ where: { id: category_ids }, transaction });
@@ -102,8 +102,8 @@ export const updatePost = async (req, res) => {
         if (req.user.role !== 'admin' && post.user_id !== req.user.id) {
             return res.status(403).json({ message: 'Not authorized' });
         }
-        const { title, introduction, status, publishedAt } = req.body;
-        await post.update({ title, introduction, status, publishedAt });
+        const { title, introduction, banner, status, publishedAt } = req.body;
+        await post.update({ title, introduction, banner, status, publishedAt });
         res.json(post);
     } catch (error) {
         res.status(500).json({ message: error.message });
