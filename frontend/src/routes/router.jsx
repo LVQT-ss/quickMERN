@@ -13,6 +13,7 @@ import CategoryCreatePage from "../pages/categories/create";
 import CategoryEditPage from "../pages/categories/edit";
 import UsersListPage from "../pages/users/list";
 import UserProfilePage from "../pages/users/profile";
+import HomePage from "../pages/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
       </Layout>
     ),
     children: [
-      { path: "/", element: <PostsListPage /> },
+      { path: "/", element: <HomePage /> },
       { path: "/login", element: <LoginPage /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/posts", element: <PostsListPage /> },
