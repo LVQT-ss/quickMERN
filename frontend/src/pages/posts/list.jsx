@@ -6,9 +6,11 @@ import { useAuth } from "../../utils/auth.jsx";
 export default function PostsListPage() {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
 
   const status = user ? searchParams.get("status") || "" : "published";
@@ -27,6 +29,7 @@ export default function PostsListPage() {
       .then(([p, c]) => {
         if (!active) return;
         setPosts(p);
+        setFilteredPosts(p);
         setCategories(c);
         setError("");
       })
@@ -37,157 +40,408 @@ export default function PostsListPage() {
     };
   }, [status, category]);
 
-  return (
-    <div className="bg-gray-50 dark:bg-gray-900 py-24 sm:py-32 min-h-screen transition-colors">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl lg:mx-0">
-          <h2 className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
-            Blog Posts
-          </h2>
-          <p className="mt-2 text-lg/8 text-gray-600 dark:text-gray-300">
-            Share your thoughts and ideas with the world.
-          </p>
-        </div>
+  // Search functionality
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredPosts(posts);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(query) ||
+          (post.introduction && post.introduction.toLowerCase().includes(query))
+      );
+      setFilteredPosts(filtered);
+    }
+  }, [searchQuery, posts]);
 
-        <div className="flex justify-between items-center mt-6">
-          <div className="flex gap-4 items-center">
-            {user && (
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-yellow-600 to-indigo-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Explore Our Articles
+            </h1>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Discover insightful content, tutorials, and stories from our
+              community of writers
+            </p>
+
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search articles by title or content..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-6 py-4 pr-32 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-20 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    title="Clear search"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                )}
+                <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full transition-colors">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters & Actions Bar */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Filters */}
+            <div className="flex flex-wrap items-center gap-3">
+              {user && (
+                <select
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={status}
+                  onChange={(e) =>
+                    setSearchParams((prev) => {
+                      const p = new URLSearchParams(prev);
+                      const v = e.target.value;
+                      if (v) p.set("status", v);
+                      else p.delete("status");
+                      return p;
+                    })
+                  }
+                >
+                  <option value="">All Posts</option>
+                  <option value="draft">Drafts</option>
+                  <option value="published">Published</option>
+                </select>
+              )}
+
               <select
-                className="px-3 py-2 bg-white dark:bg-gray-800/60 border border-gray-300 dark:border-gray-700 rounded-full text-gray-900 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                value={status}
+                className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={category}
                 onChange={(e) =>
                   setSearchParams((prev) => {
                     const p = new URLSearchParams(prev);
                     const v = e.target.value;
-                    if (v) p.set("status", v);
-                    else p.delete("status");
+                    if (v) p.set("category", v);
+                    else p.delete("category");
                     return p;
                   })
                 }
               >
-                <option value="">All Posts</option>
-                <option value="draft">Drafts</option>
-                <option value="published">Published</option>
+                <option value="">All Categories</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
               </select>
-            )}
 
-            <select
-              className="px-3 py-2 bg-gray-800/60 border border-gray-700 rounded-full text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              value={category}
-              onChange={(e) =>
-                setSearchParams((prev) => {
-                  const p = new URLSearchParams(prev);
-                  const v = e.target.value;
-                  if (v) p.set("category", v);
-                  else p.delete("category");
-                  return p;
-                })
-              }
-            >
-              <option value="">All Categories</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
+              {/* Results Counter */}
+              <span className="text-sm text-gray-600 px-3 py-2 bg-gray-100 rounded-lg">
+                {filteredPosts.length}{" "}
+                {filteredPosts.length === 1 ? "article" : "articles"}
+              </span>
+            </div>
 
-          {user && (
-            <Link
-              to="/posts/new"
-              className="px-4 py-2 bg-indigo-600 dark:bg-gray-800/60 text-white dark:text-gray-300 rounded-full hover:bg-indigo-700 dark:hover:bg-gray-800 transition duration-200 font-medium"
-            >
-              Write New Post
-            </Link>
-          )}
-        </div>
-
-        {loading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 dark:border-gray-300"></div>
-          </div>
-        )}
-
-        {error && (
-          <div className="bg-red-900/20 border border-red-500/20 text-red-400 px-4 py-3 rounded-md mt-8">
-            {error}
-          </div>
-        )}
-
-        <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 dark:border-gray-700 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-          {posts.map((post) => (
-            <article
-              key={post.id}
-              className="flex max-w-xl flex-col items-start justify-between"
-            >
-              <div className="flex items-center gap-x-4 text-xs">
-                <time
-                  dateTime={post.createdAt}
-                  className="text-gray-600 dark:text-gray-400"
+            {/* Write Button */}
+            {user && (
+              <Link
+                to="/posts/new"
+                className="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+              >
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {new Date(post.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-                <div className="flex gap-2">
-                  <span className="relative z-10 rounded-full px-3 py-1.5 font-medium">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Write Article
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mb-4"></div>
+            <p className="text-gray-600 font-medium">Loading articles...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-8">
+            <div className="flex items-center">
+              <svg
+                className="w-5 h-5 mr-3 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="font-medium">{error}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Posts Grid */}
+        {!loading && filteredPosts.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post) => (
+              <article
+                key={post.id}
+                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
+              >
+                {/* Post Image */}
+                {post.banner ? (
+                  <Link
+                    to={`/posts/${post.id}`}
+                    className="block aspect-video overflow-hidden bg-gray-200"
+                  >
+                    <img
+                      src={post.banner}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </Link>
+                ) : post.PostImages?.[0]?.imageUrl ||
+                  post.postImages?.[0]?.imageUrl ? (
+                  <Link
+                    to={`/posts/${post.id}`}
+                    className="block aspect-video overflow-hidden bg-gray-200"
+                  >
+                    <img
+                      src={
+                        post.PostImages?.[0]?.imageUrl ||
+                        post.postImages?.[0]?.imageUrl
+                      }
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/posts/${post.id}`}
+                    className="block aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center"
+                  >
+                    <svg
+                      className="w-20 h-20 text-white opacity-30"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </Link>
+                )}
+
+                {/* Post Content */}
+                <div className="p-6">
+                  {/* Meta Info */}
+                  <div className="flex items-center gap-2 mb-4 flex-wrap">
+                    <time className="text-sm text-gray-500 flex items-center">
+                      <svg
+                        className="w-4 h-4 mr-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      {new Date(post.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </time>
+
                     {post.status === "published" ? (
-                      <span className="text-green-300 bg-green-900/30 px-3 py-1.5 rounded-full">
+                      <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-semibold">
                         Published
                       </span>
                     ) : (
-                      <span className="text-amber-300 bg-amber-900/30 px-3 py-1.5 rounded-full">
+                      <span className="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded-full font-semibold">
                         Draft
                       </span>
                     )}
-                  </span>
-                  {post.categories?.map((category) => (
-                    <span
-                      key={category.id}
-                      className="relative z-10 rounded-full bg-indigo-100 dark:bg-gray-800/60 px-3 py-1.5 font-medium text-indigo-700 dark:text-gray-300 hover:bg-indigo-200 dark:hover:bg-gray-800"
-                    >
-                      {category.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {post.PostImages?.[0]?.imageUrl && (
-                <div className="relative w-full mt-4 aspect-[16/9] overflow-hidden rounded-2xl">
-                  <img
-                    src={post.PostImages[0].imageUrl}
-                    alt={post.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <div className="group relative">
-                <h3 className="mt-3 text-lg font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-gray-300">
-                  <Link to={`/posts/${post.id}`}>
-                    <span className="absolute inset-0" />
-                    {post.title}
-                  </Link>
-                </h3>
-                {post.introduction && (
-                  <p className="mt-5 line-clamp-3 text-sm text-gray-600 dark:text-gray-400">
-                    {post.introduction}
-                  </p>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
+                  </div>
 
-        {!loading && posts.length === 0 && (
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-300">
-              No posts found
+                  {/* Categories */}
+                  {(post.Categories || post.categories)?.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {(post.Categories || post.categories).map((cat) => (
+                        <Link
+                          key={cat.id}
+                          to={`/posts?category=${cat.id}`}
+                          className="text-xs px-3 py-1 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors font-medium"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Title */}
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    <Link to={`/posts/${post.id}`} className="break-words">
+                      {post.title}
+                    </Link>
+                  </h3>
+
+                  {/* Introduction */}
+                  {post.introduction && (
+                    <p className="text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed">
+                      {post.introduction}
+                    </p>
+                  )}
+
+                  {/* Author & Read More */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+                        {(post.User?.username ||
+                          post.User?.name ||
+                          "A")[0].toUpperCase()}
+                      </div>
+                      <span className="text-sm text-gray-700 font-medium">
+                        {post.User?.username || post.User?.name || "Anonymous"}
+                      </span>
+                    </div>
+                    <Link
+                      to={`/posts/${post.id}`}
+                      className="text-blue-600 hover:text-blue-700 font-semibold text-sm inline-flex items-center"
+                    >
+                      Read More
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && filteredPosts.length === 0 && (
+          <div className="text-center py-20">
+            <svg
+              className="w-24 h-24 mx-auto text-gray-400 mb-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              {searchQuery ? "No articles found" : "No articles yet"}
             </h3>
-            <p className="text-gray-500 mt-2">
-              Start by creating your first blog post
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              {searchQuery
+                ? `No articles match "${searchQuery}". Try a different search term.`
+                : "Start by creating your first blog post and share your knowledge with the world."}
             </p>
+            {searchQuery ? (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+              >
+                Clear Search
+              </button>
+            ) : user ? (
+              <Link
+                to="/posts/new"
+                className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+              >
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Create Your First Post
+              </Link>
+            ) : null}
           </div>
         )}
       </div>

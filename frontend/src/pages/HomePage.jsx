@@ -4,10 +4,12 @@ import { api } from "../utils/api.js";
 
 export default function HomePage() {
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [featuredPost, setFeaturedPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +24,9 @@ export default function HomePage() {
         if (postsData.length > 0) {
           setFeaturedPost(postsData[0]);
           // Set remaining posts (excluding featured)
-          setPosts(postsData.slice(1, 7)); // Get next 6 posts
+          const remainingPosts = postsData.slice(1, 7); // Get next 6 posts
+          setPosts(remainingPosts);
+          setFilteredPosts(remainingPosts);
         }
 
         setCategories(categoriesData);
@@ -37,8 +41,23 @@ export default function HomePage() {
     fetchData();
   }, []);
 
+  // Search functionality
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredPosts(posts);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(query) ||
+          post.introduction.toLowerCase().includes(query)
+      );
+      setFilteredPosts(filtered);
+    }
+  }, [searchQuery, posts]);
+
   // Get recent posts for sidebar (first 4)
-  const recentPosts = posts.slice(0, 4);
+  const recentPosts = filteredPosts.slice(0, 4);
 
   // Get category counts
   const getCategoryCount = (categoryId) => {
@@ -158,11 +177,17 @@ export default function HomePage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Blog Posts Grid */}
           <div className="lg:col-span-2">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              Latest Posts
-            </h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Latest Posts</h3>
+              {searchQuery && (
+                <span className="text-sm text-gray-600">
+                  {filteredPosts.length}{" "}
+                  {filteredPosts.length === 1 ? "result" : "results"}
+                </span>
+              )}
+            </div>
 
-            {posts.length === 0 && !featuredPost ? (
+            {filteredPosts.length === 0 && !featuredPost ? (
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
                 <svg
                   className="w-16 h-16 mx-auto text-gray-400 mb-4"
@@ -178,15 +203,25 @@ export default function HomePage() {
                   />
                 </svg>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  No posts yet
+                  {searchQuery ? "No posts found" : "No posts yet"}
                 </h3>
                 <p className="text-gray-600">
-                  Check back later for new content
+                  {searchQuery
+                    ? `No posts match "${searchQuery}"`
+                    : "Check back later for new content"}
                 </p>
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="mt-4 text-blue-600 hover:text-blue-700 font-semibold"
+                  >
+                    Clear search
+                  </button>
+                )}
               </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-6">
-                {posts.map((post) => (
+                {filteredPosts.map((post) => (
                   <article
                     key={post.id}
                     className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
@@ -279,8 +314,31 @@ export default function HomePage() {
                 <input
                   type="text"
                   placeholder="Search posts..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-10 top-2.5 text-gray-400 hover:text-gray-600"
+                    title="Clear search"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                )}
                 <button className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
                   <svg
                     className="w-5 h-5"
@@ -297,6 +355,12 @@ export default function HomePage() {
                   </svg>
                 </button>
               </div>
+              {searchQuery && (
+                <p className="text-sm text-gray-600 mt-2">
+                  Found {filteredPosts.length}{" "}
+                  {filteredPosts.length === 1 ? "result" : "results"}
+                </p>
+              )}
             </div>
 
             {/* About */}
