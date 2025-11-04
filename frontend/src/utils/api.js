@@ -57,6 +57,7 @@ export const api = {
     comments: {
         create: (payload, token) => request('/comments', { method: 'POST', body: payload, token }),
         listByPost: (postId) => request(`/comments?post_id=${encodeURIComponent(postId)}`),
+        listByUser: (userId) => request(`/comments?user_id=${encodeURIComponent(userId)}`),
         update: (id, payload, token) => request(`/comments/${id}`, { method: 'PUT', body: payload, token }),
         remove: (id, token) => request(`/comments/${id}`, { method: 'DELETE', token })
     },

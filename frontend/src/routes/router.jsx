@@ -2,6 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Layout from "../components/Layout";
 import ProtectedRoute from "./ProtectedRoute";
+import AdminRoute from "./AdminRoute";
 import LoginPage from "../pages/login";
 import RegisterPage from "../pages/register";
 import PostsListPage from "../pages/posts/list";
@@ -15,6 +16,7 @@ import UsersListPage from "../pages/users/list";
 import UserProfilePage from "../pages/users/profile";
 import HomePage from "../pages/HomePage";
 import About from "../pages/about";
+import Dashboard from "../pages/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +27,14 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "/", element: <HomePage /> },
+      {
+        path: "/dashboard",
+        element: (
+          <AdminRoute>
+            <Dashboard />
+          </AdminRoute>
+        ),
+      },
       { path: "/login", element: <LoginPage /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/about", element: <About /> },

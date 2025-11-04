@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { api } from "../../utils/api";
 import { useAuth } from "../../utils/auth.jsx";
+import { Heart, MessageCircle, Send } from "lucide-react";
 
 export default function PostDetailPage() {
   const { id } = useParams();
@@ -14,18 +15,26 @@ export default function PostDetailPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [readingProgress, setReadingProgress] = useState(0);
-  const [activeSection, setActiveSection] = useState("");
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [replyTo, setReplyTo] = useState(null);
+  const [submittingComment, setSubmittingComment] = useState(false);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
-    Promise.all([api.posts.get(id), api.likes.count(id)])
-      .then(([p, c]) => {
+    Promise.all([
+      api.posts.get(id),
+      api.likes.count(id),
+      api.comments.listByPost(id),
+    ])
+      .then(([p, c, commentsData]) => {
         if (!active) return;
         setPost(p);
         setCount(c.count || 0);
+        setComments(commentsData || []);
         setError("");
       })
       .catch((err) => setError(err.message))
@@ -118,6 +127,64 @@ export default function PostDetailPage() {
     });
     return Math.ceil(totalWords / wordsPerMinute);
   }, [post, sections]);
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    if (!newComment.trim()) return;
+
+    setSubmittingComment(true);
+    try {
+      const token = localStorage.getItem("token");
+      const payload = {
+        post_id: Number(id),
+        body: newComment,
+        ...(replyTo && { parent_id: replyTo.id }),
+      };
+      await api.comments.create(payload, token);
+
+      // Fetch updated comments
+      const updatedComments = await api.comments.listByPost(id);
+      setComments(updatedComments || []);
+
+      setNewComment("");
+      setReplyTo(null);
+    } catch (err) {
+      setError(err.message || "Failed to post comment");
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Are you sure you want to delete this comment?"))
+      return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await api.comments.remove(commentId, token);
+
+      // Fetch updated comments
+      const updatedComments = await api.comments.listByPost(id);
+      setComments(updatedComments || []);
+    } catch (err) {
+      setError(err.message || "Failed to delete comment");
+    }
+  };
+
+  // Organize comments into parent and replies
+  const organizedComments = useMemo(() => {
+    const parentComments = comments.filter((c) => !c.parentId && !c.parent_id);
+    return parentComments.map((parent) => ({
+      ...parent,
+      replies: comments.filter(
+        (c) => (c.parentId || c.parent_id) === parent.id
+      ),
+    }));
+  }, [comments]);
 
   if (loading) {
     return (
@@ -534,7 +601,7 @@ export default function PostDetailPage() {
                       (a.orderIndex ?? a.order_index ?? 0) -
                       (b.orderIndex ?? b.order_index ?? 0)
                   )
-                  .map((section, index) => {
+                  .map((section) => {
                     const sectionImages = images
                       .filter(
                         (img) =>
@@ -723,6 +790,232 @@ export default function PostDetailPage() {
                     </a>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Comments Section */}
+            <div
+              id="comments"
+              className="bg-white rounded-xl shadow-lg p-8 mt-8"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                  <MessageCircle className="mr-2 text-blue-600" size={28} />
+                  Comments ({comments.length})
+                </h3>
+                <div className="flex items-center gap-3 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Heart size={18} className="text-red-500" />
+                    <span>{post?.totalLikes || count} likes</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MessageCircle size={18} className="text-blue-500" />
+                    <span>
+                      {post?.totalComments || comments.length} comments
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Comment Form */}
+              <div className="mb-8">
+                {replyTo && (
+                  <div className="mb-3 p-3 bg-blue-50 border-l-4 border-blue-600 rounded-r">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-700">
+                        Replying to{" "}
+                        <span className="font-semibold">
+                          {replyTo.User?.username || "user"}
+                        </span>
+                      </span>
+                      <button
+                        onClick={() => setReplyTo(null)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <form onSubmit={handleSubmitComment} className="flex gap-3">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                      {user ? user.username?.[0]?.toUpperCase() || "U" : "?"}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <textarea
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      placeholder={
+                        user ? "Write a comment..." : "Please log in to comment"
+                      }
+                      disabled={!user || submittingComment}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      rows="3"
+                    />
+                    <div className="flex justify-end mt-2">
+                      <button
+                        type="submit"
+                        disabled={
+                          !user || submittingComment || !newComment.trim()
+                        }
+                        className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Send size={18} />
+                        {submittingComment
+                          ? "Posting..."
+                          : replyTo
+                          ? "Post Reply"
+                          : "Post Comment"}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              {/* Comments List */}
+              <div className="space-y-6">
+                {organizedComments.length === 0 ? (
+                  <div className="text-center py-12">
+                    <MessageCircle
+                      size={48}
+                      className="mx-auto text-gray-300 mb-4"
+                    />
+                    <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                      No comments yet
+                    </h4>
+                    <p className="text-gray-600">
+                      Be the first to share your thoughts!
+                    </p>
+                  </div>
+                ) : (
+                  organizedComments.map((comment) => (
+                    <div
+                      key={comment.id}
+                      className="border-b border-gray-200 pb-6 last:border-0"
+                    >
+                      {/* Parent Comment */}
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                            {(comment.User?.username || "U")[0].toUpperCase()}
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="font-semibold text-gray-900">
+                              {comment.User?.username || "Anonymous"}
+                            </span>
+                            <span className="text-sm text-gray-500">
+                              {new Date(
+                                comment.createdAt || comment.created_at
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                          </div>
+                          <p className="text-gray-700 mb-3 break-words">
+                            {comment.body}
+                          </p>
+                          <div className="flex items-center gap-4">
+                            <button
+                              onClick={() => setReplyTo(comment)}
+                              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                            >
+                              Reply
+                            </button>
+                            {user &&
+                              (user.id === comment.user_id ||
+                                user.role === "admin") && (
+                                <button
+                                  onClick={() =>
+                                    handleDeleteComment(comment.id)
+                                  }
+                                  className="text-sm text-red-600 hover:text-red-700 font-medium"
+                                >
+                                  Delete
+                                </button>
+                              )}
+                          </div>
+
+                          {/* Replies */}
+                          {comment.replies && comment.replies.length > 0 && (
+                            <div className="mt-4 space-y-4 pl-6 border-l-2 border-gray-200">
+                              {comment.replies.map((reply) => (
+                                <div key={reply.id} className="flex gap-3">
+                                  <div className="flex-shrink-0">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-sm">
+                                      {(reply.User?.username ||
+                                        "U")[0].toUpperCase()}
+                                    </div>
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="font-semibold text-gray-900 text-sm">
+                                        {reply.User?.username || "Anonymous"}
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        {new Date(
+                                          reply.createdAt || reply.created_at
+                                        ).toLocaleDateString("en-US", {
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        })}
+                                      </span>
+                                    </div>
+                                    <p className="text-gray-700 text-sm mb-2 break-words">
+                                      {reply.body}
+                                    </p>
+                                    <div className="flex items-center gap-4">
+                                      <button
+                                        onClick={() => setReplyTo(comment)}
+                                        className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                                      >
+                                        Reply
+                                      </button>
+                                      {user &&
+                                        (user.id === reply.user_id ||
+                                          user.role === "admin") && (
+                                          <button
+                                            onClick={() =>
+                                              handleDeleteComment(reply.id)
+                                            }
+                                            className="text-xs text-red-600 hover:text-red-700 font-medium"
+                                          >
+                                            Delete
+                                          </button>
+                                        )}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 

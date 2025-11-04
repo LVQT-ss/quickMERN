@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../../utils/api";
 import { useAuth } from "../../utils/auth.jsx";
+import { Heart, MessageCircle } from "lucide-react";
 
 export default function PostsListPage() {
   const { user } = useAuth();
@@ -12,6 +13,8 @@ export default function PostsListPage() {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [userLikes, setUserLikes] = useState(new Set());
+  const [likingPosts, setLikingPosts] = useState(new Set());
 
   const status = user ? searchParams.get("status") || "" : "published";
   const category = searchParams.get("category") || "";
@@ -55,10 +58,83 @@ export default function PostsListPage() {
     }
   }, [searchQuery, posts]);
 
+  // Fetch user likes if logged in
+  useEffect(() => {
+    if (user && posts.length > 0) {
+      Promise.all(posts.map((post) => api.likes.list(post.id)))
+        .then((results) => {
+          const likedPostIds = new Set();
+          results.forEach((likes, index) => {
+            if (likes.some((like) => like.user_id === user.id)) {
+              likedPostIds.add(posts[index].id);
+            }
+          });
+          setUserLikes(likedPostIds);
+        })
+        .catch((err) => console.error("Error fetching likes:", err));
+    }
+  }, [user, posts]);
+
+  // Handle like toggle
+  const handleLikeToggle = async (postId) => {
+    if (!user) {
+      alert("Please log in to like posts");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please log in to like posts");
+      return;
+    }
+
+    // Optimistic update
+    setLikingPosts((prev) => new Set(prev).add(postId));
+    const wasLiked = userLikes.has(postId);
+
+    try {
+      await api.likes.toggle(postId, token);
+
+      // Update user likes
+      setUserLikes((prev) => {
+        const newLikes = new Set(prev);
+        if (wasLiked) {
+          newLikes.delete(postId);
+        } else {
+          newLikes.add(postId);
+        }
+        return newLikes;
+      });
+
+      // Update posts count
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? {
+                ...post,
+                totalLikes: wasLiked
+                  ? (post.totalLikes || 0) - 1
+                  : (post.totalLikes || 0) + 1,
+              }
+            : post
+        )
+      );
+    } catch (err) {
+      console.error("Error toggling like:", err);
+      alert(err.message || "Failed to like post");
+    } finally {
+      setLikingPosts((prev) => {
+        const newLiking = new Set(prev);
+        newLiking.delete(postId);
+        return newLiking;
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-yellow-600 to-indigo-700 text-white">
+      <div className="bg-linear-65 from-purple-500 to-pink-500 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -269,7 +345,7 @@ export default function PostsListPage() {
                 ) : (
                   <Link
                     to={`/posts/${post.id}`}
-                    className="block aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center"
+                    className="flex aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 items-center justify-center"
                   >
                     <svg
                       className="w-20 h-20 text-white opacity-30"
@@ -351,6 +427,50 @@ export default function PostsListPage() {
                       {post.introduction}
                     </p>
                   )}
+
+                  {/* Like and Comment Stats */}
+                  <div className="flex items-center gap-4 mb-4">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleLikeToggle(post.id);
+                      }}
+                      disabled={likingPosts.has(post.id)}
+                      className={`flex items-center gap-1.5 text-sm transition-colors ${
+                        userLikes.has(post.id)
+                          ? "text-red-600 hover:text-red-700"
+                          : "text-gray-600 hover:text-red-600"
+                      } ${
+                        likingPosts.has(post.id)
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      title={
+                        user
+                          ? userLikes.has(post.id)
+                            ? "Unlike"
+                            : "Like"
+                          : "Login to like"
+                      }
+                    >
+                      <Heart
+                        size={18}
+                        className={userLikes.has(post.id) ? "fill-current" : ""}
+                      />
+                      <span className="font-medium">
+                        {post.totalLikes || 0}
+                      </span>
+                    </button>
+                    <Link
+                      to={`/posts/${post.id}#comments`}
+                      className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      <MessageCircle size={18} />
+                      <span className="font-medium">
+                        {post.totalComments || 0}
+                      </span>
+                    </Link>
+                  </div>
 
                   {/* Author & Read More */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">

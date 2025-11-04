@@ -20,7 +20,7 @@ export const createUser = async (req, res) => {
 
 export const getUsers = async (req, res) => {
     try {
-        const users = await User.findAll({ attributes: ['id', 'username', 'email', 'role', 'bio', 'createdAt', 'updatedAt'] });
+        const users = await User.findAll({ attributes: ['id', 'username', 'email', 'role', 'bio', 'avatar', 'createdAt', 'updatedAt'] });
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -29,7 +29,7 @@ export const getUsers = async (req, res) => {
 
 export const getUserById = async (req, res) => {
     try {
-        const user = await User.findByPk(req.params.id, { attributes: ['id', 'username', 'email', 'role', 'bio', 'createdAt', 'updatedAt'] });
+        const user = await User.findByPk(req.params.id, { attributes: ['id', 'username', 'email', 'role', 'bio', 'avatar', 'createdAt', 'updatedAt'] });
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.json(user);
     } catch (error) {
@@ -44,8 +44,8 @@ export const updateUser = async (req, res) => {
         if (req.user.role !== 'admin' && req.user.id !== user.id) {
             return res.status(403).json({ message: 'Not authorized' });
         }
-        const { username, email, bio, role } = req.body;
-        await user.update({ username, email, bio, role });
+        const { username, email, bio, avatar } = req.body;
+        await user.update({ username, email, bio, avatar });
         res.json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });

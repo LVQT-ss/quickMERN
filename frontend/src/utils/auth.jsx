@@ -19,27 +19,19 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (username, password) => {
-    try {
-      const response = await api.auth.login({ username, password });
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
-      setUser(response.user);
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await api.auth.login({ username, password });
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response.user));
+    setUser(response.user);
+    return response;
   };
 
   const register = async (userData) => {
-    try {
-      const response = await api.auth.register(userData);
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
-      setUser(response.user);
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await api.auth.register(userData);
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response.user));
+    setUser(response.user);
+    return response;
   };
 
   const logout = () => {
@@ -48,11 +40,18 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const updateUser = (updatedUserData) => {
+    const newUserData = { ...user, ...updatedUserData };
+    localStorage.setItem("user", JSON.stringify(newUserData));
+    setUser(newUserData);
+  };
+
   const value = {
     user,
     login,
     logout,
     register,
+    updateUser,
     loading,
   };
 

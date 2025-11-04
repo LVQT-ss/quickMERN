@@ -22,6 +22,7 @@ const router = express.Router();
  *               email: { type: string, format: email }
  *               passwordHash: { type: string }
  *               bio: { type: string }
+ *               avatar: { type: string }
  *     responses:
  *       201: { description: User created }
  */
@@ -80,7 +81,7 @@ router.get('/users/:id', verifyToken, getUserById);
  *               username: { type: string }
  *               email: { type: string, format: email }
  *               bio: { type: string }
- *               role: { type: string, enum: [admin, user] }
+ *               avatar: { type: string }
  *     responses:
  *       200: { description: Updated }
  *       403: { description: Forbidden }

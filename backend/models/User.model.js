@@ -22,6 +22,10 @@ const User = sequelize.define('User', {
         allowNull: false,
         field: 'password_hash'
     },
+    avatar: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
     role: {
         type: DataTypes.ENUM('admin', 'user'),
         defaultValue: 'user',

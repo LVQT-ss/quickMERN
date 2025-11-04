@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../utils/api.js";
-
+import { TrendingUp, Tag, Heart, MessageCircle } from "lucide-react";
 export default function HomePage() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -65,6 +65,15 @@ export default function HomePage() {
       post.Categories?.some((cat) => cat.id === categoryId)
     ).length;
   };
+
+  // Fake trending topics for demo purposes
+  const trendingTopics = [
+    { name: "React", count: 47 },
+    { name: "JavaScript", count: 38 },
+    { name: "Web Development", count: 29 },
+    { name: "Node.js", count: 22 },
+    { name: "CSS", count: 18 },
+  ];
 
   if (loading) {
     return (
@@ -134,6 +143,16 @@ export default function HomePage() {
                       }
                     )}
                   </span>
+                </div>
+                <div className="flex items-center gap-4 text-sm text-gray-600 mb-6">
+                  <div className="flex items-center gap-1">
+                    <Heart size={18} className="text-red-500" />
+                    <span>{featuredPost.totalLikes || 0} likes</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MessageCircle size={18} className="text-blue-500" />
+                    <span>{featuredPost.totalComments || 0} comments</span>
+                  </div>
                 </div>
                 <Link
                   to={`/posts/${featuredPost.id}`}
@@ -279,6 +298,16 @@ export default function HomePage() {
                       <p className="text-gray-600 mb-4 line-clamp-3">
                         {post.introduction}
                       </p>
+                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                        <div className="flex items-center gap-1">
+                          <Heart size={16} className="text-red-500" />
+                          <span>{post.totalLikes || 0}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <MessageCircle size={16} className="text-blue-500" />
+                          <span>{post.totalComments || 0}</span>
+                        </div>
+                      </div>
                       <Link
                         to={`/posts/${post.id}`}
                         className="text-blue-600 font-semibold hover:text-blue-700 transition-colors inline-flex items-center"
@@ -363,14 +392,32 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* About */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h4 className="text-lg font-bold text-gray-900 mb-4">About</h4>
-              <p className="text-gray-600 leading-relaxed">
-                Welcome to TechBlog! We share insights, tutorials, and thoughts
-                on web development, design, and technology. Join our community
-                of learners and creators.
-              </p>
+            {/* Trending Topics */}
+            <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <div className="flex items-center gap-2 mb-6">
+                <TrendingUp size={24} className="text-blue-600" />
+                <h3 className="text-2xl font-bold text-slate-900">
+                  Trending Topics
+                </h3>
+              </div>
+              <div className="space-y-3">
+                {trendingTopics.map((topic, index) => (
+                  <button
+                    key={index}
+                    className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Tag size={16} className="text-blue-600" />
+                      <span className="font-medium text-slate-700 group-hover:text-blue-600">
+                        {topic.name}
+                      </span>
+                    </span>
+                    <span className="text-slate-500 text-sm">
+                      {topic.count}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Recent Posts */}

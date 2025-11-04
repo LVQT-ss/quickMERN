@@ -1,5 +1,6 @@
 import Comment from '../models/Comment.model.js';
 import User from '../models/User.model.js';
+import Post from '../models/Blog.model.js';
 
 export const addComment = async (req, res) => {
     try {
@@ -14,10 +15,23 @@ export const addComment = async (req, res) => {
 
 export const getComments = async (req, res) => {
     try {
-        const { post_id } = req.query;
+        const { post_id, user_id } = req.query;
         const where = {};
         if (post_id) where.post_id = post_id;
-        const comments = await Comment.findAll({ where, include: [{ model: User, attributes: ['id', 'username'] }] });
+        if (user_id) where.user_id = user_id;
+
+        const include = [{ model: User, attributes: ['id', 'username', 'avatar'] }];
+
+        // Include post info when fetching comments by user
+        if (user_id) {
+            include.push({ model: Post, attributes: ['id', 'title', 'banner'] });
+        }
+
+        const comments = await Comment.findAll({
+            where,
+            include,
+            order: [['created_at', 'DESC']]
+        });
         res.json(comments);
     } catch (error) {
         res.status(500).json({ message: error.message });

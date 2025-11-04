@@ -67,6 +67,26 @@ export const getPosts = async (req, res) => {
         const posts = await Post.findAll({
             where,
             include,
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM post_likes AS pl
+                            WHERE pl.post_id = "Post"."id"
+                        )`),
+                        'totalLikes'
+                    ],
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM comments AS c
+                            WHERE c.post_id = "Post"."id"
+                        )`),
+                        'totalComments'
+                    ]
+                ]
+            },
             order: [
                 ['createdAt', 'DESC'],
                 [PostImage, 'orderIndex', 'ASC']  // Order images by their orderIndex
@@ -86,7 +106,27 @@ export const getPostById = async (req, res) => {
                 { model: PostSection, order: [['order_index', 'ASC']] },
                 { model: PostImage },
                 { model: Category, through: { attributes: [] } }
-            ]
+            ],
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM post_likes AS pl
+                            WHERE pl.post_id = "Post"."id"
+                        )`),
+                        'totalLikes'
+                    ],
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM comments AS c
+                            WHERE c.post_id = "Post"."id"
+                        )`),
+                        'totalComments'
+                    ]
+                ]
+            }
         });
         if (!post) return res.status(404).json({ message: 'Post not found' });
         res.json(post);
