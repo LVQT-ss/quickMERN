@@ -18,6 +18,7 @@ import {
   TrendingUp,
   Award,
 } from "lucide-react";
+import FadeUp from "../../components/FadeUp";
 
 export default function UserProfilePage() {
   const { id } = useParams();
@@ -345,6 +346,7 @@ export default function UserProfilePage() {
           {activeTab === "overview" && (
             <div className="space-y-8">
               {/* Statistics Cards */}
+              <FadeUp>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-100 dark:border-blue-800">
                   <div className="flex items-center justify-between mb-4">
@@ -426,8 +428,10 @@ export default function UserProfilePage() {
                   </p>
                 </div>
               </div>
+              </FadeUp>
 
               {/* About Section */}
+              <FadeUp delay={0.2}>
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                   About
@@ -486,8 +490,10 @@ export default function UserProfilePage() {
                   )}
                 </div>
               </div>
+              </FadeUp>
 
               {/* Recent Activity */}
+              <FadeUp delay={0.3}>
               {posts.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -553,6 +559,7 @@ export default function UserProfilePage() {
                   )}
                 </div>
               )}
+              </FadeUp>
             </div>
           )}
 

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../../utils/api";
 import { useAuth } from "../../utils/auth.jsx";
 import { Heart, MessageCircle } from "lucide-react";
+import FadeUp from "../../components/FadeUp";
 
 export default function PostsListPage() {
   const { user } = useAuth();
@@ -311,8 +312,9 @@ export default function PostsListPage() {
 
         {/* Posts Grid */}
         {!loading && filteredPosts.length > 0 && (
+          <FadeUp>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
+            {filteredPosts.map((post, index) => (
               <article
                 key={post.id}
                 className="bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-800"
@@ -510,6 +512,7 @@ export default function PostsListPage() {
               </article>
             ))}
           </div>
+          </FadeUp>
         )}
 
         {/* Empty State */}

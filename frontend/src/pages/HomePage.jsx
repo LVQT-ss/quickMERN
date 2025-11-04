@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../utils/api.js";
 import { TrendingUp, Heart, MessageCircle, Eye } from "lucide-react";
+import FadeUp from "../components/FadeUp";
 export default function HomePage() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -118,83 +119,85 @@ export default function HomePage() {
 
       {/* Hero Section */}
       {featuredPost && (
-        <section className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
-                  Featured Post
-                </span>
-                <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-                  {featuredPost.title}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-lg mb-6">
-                  {featuredPost.introduction}
-                </p>
-                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6">
-                  <span>
-                    By{" "}
-                    {featuredPost.User?.username ||
-                      featuredPost.User?.name ||
-                      "Anonymous"}
+        <FadeUp>
+          <section className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
+                    Featured Post
                   </span>
-                  <span className="mx-2">•</span>
-                  <span>
-                    {new Date(featuredPost.createdAt).toLocaleDateString(
-                      "en-US",
-                      {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      }
-                    )}
-                  </span>
+                  <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                    {featuredPost.title}
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-lg mb-6">
+                    {featuredPost.introduction}
+                  </p>
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+                    <span>
+                      By{" "}
+                      {featuredPost.User?.username ||
+                        featuredPost.User?.name ||
+                        "Anonymous"}
+                    </span>
+                    <span className="mx-2">•</span>
+                    <span>
+                      {new Date(featuredPost.createdAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
+                    <div className="flex items-center gap-1">
+                      <Heart size={18} className="text-red-500" />
+                      <span>{featuredPost.totalLikes || 0} likes</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle size={18} className="text-blue-500" />
+                      <span>{featuredPost.totalComments || 0} comments</span>
+                    </div>
+                  </div>
+                  <Link
+                    to={`/posts/${featuredPost.id}`}
+                    className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors inline-block"
+                  >
+                    Read More
+                  </Link>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
-                  <div className="flex items-center gap-1">
-                    <Heart size={18} className="text-red-500" />
-                    <span>{featuredPost.totalLikes || 0} likes</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle size={18} className="text-blue-500" />
-                    <span>{featuredPost.totalComments || 0} comments</span>
-                  </div>
+                <div className="order-first md:order-last">
+                  {featuredPost.banner ? (
+                    <img
+                      src={featuredPost.banner}
+                      alt={featuredPost.title}
+                      className="w-full h-80 object-cover rounded-lg shadow-lg"
+                    />
+                  ) : (
+                    <div className="w-full h-80 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg shadow-lg flex items-center justify-center">
+                      <svg
+                        className="w-24 h-24 text-white opacity-50"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </div>
-                <Link
-                  to={`/posts/${featuredPost.id}`}
-                  className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors inline-block"
-                >
-                  Read More
-                </Link>
-              </div>
-              <div className="order-first md:order-last">
-                {featuredPost.banner ? (
-                  <img
-                    src={featuredPost.banner}
-                    alt={featuredPost.title}
-                    className="w-full h-80 object-cover rounded-lg shadow-lg"
-                  />
-                ) : (
-                  <div className="w-full h-80 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg shadow-lg flex items-center justify-center">
-                    <svg
-                      className="w-24 h-24 text-white opacity-50"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                )}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </FadeUp>
       )}
 
       {/* Main Content */}
@@ -202,151 +205,156 @@ export default function HomePage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Blog Posts Grid */}
           <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                Latest Posts
-              </h3>
-              {searchQuery && (
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {filteredPosts.length}{" "}
-                  {filteredPosts.length === 1 ? "result" : "results"}
-                </span>
-              )}
-            </div>
-
-            {filteredPosts.length === 0 && !featuredPost ? (
-              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-12 text-center">
-                <svg
-                  className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                  {searchQuery ? "No posts found" : "No posts yet"}
+            <FadeUp delay={0.2}>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  Latest Posts
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {searchQuery
-                    ? `No posts match "${searchQuery}"`
-                    : "Check back later for new content"}
-                </p>
                 {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="mt-4 text-blue-600 hover:text-blue-700 font-semibold"
-                  >
-                    Clear search
-                  </button>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {filteredPosts.length}{" "}
+                    {filteredPosts.length === 1 ? "result" : "results"}
+                  </span>
                 )}
               </div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-6">
-                {filteredPosts.map((post) => (
-                  <article
-                    key={post.id}
-                    className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+
+              {filteredPosts.length === 0 && !featuredPost ? (
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-12 text-center">
+                  <svg
+                    className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {post.banner ? (
-                      <img
-                        src={post.banner}
-                        alt={post.title}
-                        className="w-full h-48 object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                        <svg
-                          className="w-12 h-12 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                    <div className="p-6">
-                      {post.Categories && post.Categories.length > 0 && (
-                        <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded mb-3">
-                          {post.Categories[0].name}
-                        </span>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    {searchQuery ? "No posts found" : "No posts yet"}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {searchQuery
+                      ? `No posts match "${searchQuery}"`
+                      : "Check back later for new content"}
+                  </p>
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="mt-4 text-blue-600 hover:text-blue-700 font-semibold"
+                    >
+                      Clear search
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {filteredPosts.map((post) => (
+                    <article
+                      key={post.id}
+                      className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                    >
+                      {post.banner ? (
+                        <img
+                          src={post.banner}
+                          alt={post.title}
+                          className="w-full h-48 object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                          <svg
+                            className="w-12 h-12 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </div>
                       )}
-                      <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                        <Link to={`/posts/${post.id}`}>{post.title}</Link>
-                      </h4>
-                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-                        <span>
-                          {post.User?.username ||
-                            post.User?.name ||
-                            "Anonymous"}
-                        </span>
-                        <span className="mx-2">•</span>
-                        <span>
-                          {new Date(post.createdAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
-                        </span>
-                      </div>
-                      <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
-                        {post.introduction}
-                      </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        <div className="flex items-center gap-1">
-                          <Eye
-                            size={16}
-                            className="text-gray-500 dark:text-gray-400"
-                          />
-                          <span>{post.viewCount || 0}</span>
+                      <div className="p-6">
+                        {post.Categories && post.Categories.length > 0 && (
+                          <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded mb-3">
+                            {post.Categories[0].name}
+                          </span>
+                        )}
+                        <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                          <Link to={`/posts/${post.id}`}>{post.title}</Link>
+                        </h4>
+                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                          <span>
+                            {post.User?.username ||
+                              post.User?.name ||
+                              "Anonymous"}
+                          </span>
+                          <span className="mx-2">•</span>
+                          <span>
+                            {new Date(post.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )}
+                          </span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Heart size={16} className="text-red-500" />
-                          <span>{post.totalLikes || 0}</span>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+                          {post.introduction}
+                        </p>
+                        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                          <div className="flex items-center gap-1">
+                            <Eye
+                              size={16}
+                              className="text-gray-500 dark:text-gray-400"
+                            />
+                            <span>{post.viewCount || 0}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Heart size={16} className="text-red-500" />
+                            <span>{post.totalLikes || 0}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <MessageCircle
+                              size={16}
+                              className="text-blue-500"
+                            />
+                            <span>{post.totalComments || 0}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <MessageCircle size={16} className="text-blue-500" />
-                          <span>{post.totalComments || 0}</span>
-                        </div>
-                      </div>
-                      <Link
-                        to={`/posts/${post.id}`}
-                        className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors inline-flex items-center"
-                      >
-                        Read More
-                        <svg
-                          className="w-4 h-4 ml-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                        <Link
+                          to={`/posts/${post.id}`}
+                          className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors inline-flex items-center"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </Link>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
+                          Read More
+                          <svg
+                            className="w-4 h-4 ml-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </Link>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </FadeUp>
           </div>
 
           {/* Sidebar */}
@@ -410,99 +418,105 @@ export default function HomePage() {
             </div>
 
             {/* Trending Posts (Most Liked) */}
-            {trendingPosts.length > 0 && (
-              <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg">
-                <div className="flex items-center gap-2 mb-6">
-                  <TrendingUp
-                    size={24}
-                    className="text-blue-600 dark:text-blue-400"
-                  />
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-gray-100">
-                    Trending Posts
-                  </h3>
-                </div>
-                <div className="space-y-3">
-                  {trendingPosts.map((post) => (
-                    <Link
-                      key={post.id}
-                      to={`/posts/${post.id}`}
-                      className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors group"
-                    >
-                      <span className="flex items-center gap-2 flex-1 min-w-0">
-                        <Heart
-                          size={16}
-                          className="text-red-500 flex-shrink-0"
-                        />
-                        <span className="font-medium text-slate-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">
-                          {post.title}
+            <FadeUp delay={0.4}>
+              {trendingPosts.length > 0 && (
+                <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg">
+                  <div className="flex items-center gap-2 mb-6">
+                    <TrendingUp
+                      size={24}
+                      className="text-blue-600 dark:text-blue-400"
+                    />
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-gray-100">
+                      Trending Posts
+                    </h3>
+                  </div>
+                  <div className="space-y-3">
+                    {trendingPosts.map((post) => (
+                      <Link
+                        key={post.id}
+                        to={`/posts/${post.id}`}
+                        className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors group"
+                      >
+                        <span className="flex items-center gap-2 flex-1 min-w-0">
+                          <Heart
+                            size={16}
+                            className="text-red-500 flex-shrink-0"
+                          />
+                          <span className="font-medium text-slate-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">
+                            {post.title}
+                          </span>
                         </span>
-                      </span>
-                      <span className="text-slate-500 dark:text-gray-400 text-sm ml-2 flex-shrink-0">
-                        {post.totalLikes || 0}
-                      </span>
-                    </Link>
-                  ))}
+                        <span className="text-slate-500 dark:text-gray-400 text-sm ml-2 flex-shrink-0">
+                          {post.totalLikes || 0}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </FadeUp>
 
             {/* Recent Posts */}
-            {recentPosts.length > 0 && (
-              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-                <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
-                  Recent Posts
-                </h4>
-                <ul className="space-y-3">
-                  {recentPosts.map((post) => (
-                    <li key={post.id}>
-                      <Link
-                        to={`/posts/${post.id}`}
-                        className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                      >
-                        <div className="font-medium">{post.title}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(post.createdAt).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Categories */}
-            {categories.length > 0 && (
-              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-                <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
-                  Categories
-                </h4>
-                <ul className="space-y-2">
-                  {categories.slice(0, 5).map((category) => {
-                    const count = getCategoryCount(category.id);
-                    return (
-                      <li key={category.id}>
+            <FadeUp delay={0.5}>
+              {recentPosts.length > 0 && (
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+                  <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+                    Recent Posts
+                  </h4>
+                  <ul className="space-y-3">
+                    {recentPosts.map((post) => (
+                      <li key={post.id}>
                         <Link
-                          to={`/posts?category=${category.id}`}
-                          className="flex justify-between items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1"
+                          to={`/posts/${post.id}`}
+                          className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         >
-                          <span>{category.name}</span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400">
-                            ({count})
-                          </span>
+                          <div className="font-medium">{post.title}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {new Date(post.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )}
+                          </div>
                         </Link>
                       </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </FadeUp>
+
+            {/* Categories */}
+            <FadeUp delay={0.6}>
+              {categories.length > 0 && (
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+                  <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+                    Categories
+                  </h4>
+                  <ul className="space-y-2">
+                    {categories.slice(0, 5).map((category) => {
+                      const count = getCategoryCount(category.id);
+                      return (
+                        <li key={category.id}>
+                          <Link
+                            to={`/posts?category=${category.id}`}
+                            className="flex justify-between items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1"
+                          >
+                            <span>{category.name}</span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                              ({count})
+                            </span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+            </FadeUp>
           </aside>
         </div>
       </div>
