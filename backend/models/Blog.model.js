@@ -28,6 +28,12 @@ const Post = sequelize.define('Post', {
         type: DataTypes.DATE,
         allowNull: true,
         defaultValue: DataTypes.NOW
+    },
+    viewCount: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'view_count'
     }
 }, {
     timestamps: true,

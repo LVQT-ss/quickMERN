@@ -32,13 +32,14 @@ export default function Dashboard() {
   const [categories, setCategories] = useState([]);
   const [users, setUsers] = useState([]);
   const [comments, setComments] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Filters
   const [postFilter, setPostFilter] = useState("all"); // all, published, draft
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTab, setSelectedTab] = useState("overview"); // overview, posts, categories, users, comments
+  const [selectedTab, setSelectedTab] = useState("overview"); // overview, posts, categories, users, comments, analytics
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -52,13 +53,15 @@ export default function Dashboard() {
       api.posts.list().then((posts) =>
         Promise.all(posts.map((p) => api.comments.listByPost(p.id).catch(() => [])))
       ),
+      api.analytics.getSiteStats(token).catch(() => null),
     ])
-      .then(([postsData, categoriesData, usersData, commentsArrays]) => {
+      .then(([postsData, categoriesData, usersData, commentsArrays, analyticsData]) => {
         setPosts(postsData);
         setCategories(categoriesData);
         setUsers(usersData);
         const allComments = commentsArrays.flat();
         setComments(allComments);
+        setAnalytics(analyticsData);
         setError("");
       })
       .catch((err) => setError(err.message))
@@ -74,7 +77,11 @@ export default function Dashboard() {
     totalUsers: users.length,
     totalComments: comments.length,
     totalLikes: posts.reduce((sum, p) => sum + (parseInt(p.totalLikes, 10) || 0), 0),
-    totalViews: posts.reduce((sum, p) => sum + (parseInt(p.views, 10) || 0), 0),
+    totalViews: posts.reduce((sum, p) => sum + (parseInt(p.viewCount, 10) || 0), 0),
+    siteVisitsToday: analytics?.visitsToday || 0,
+    siteVisitsThisWeek: analytics?.visitsThisWeek || 0,
+    siteVisitsThisMonth: analytics?.visitsThisMonth || 0,
+    totalSiteVisits: analytics?.totalVisits || 0,
   };
 
   // Filter posts
@@ -214,6 +221,7 @@ export default function Dashboard() {
               { id: "posts", label: "Posts", icon: FileText },
               { id: "categories", label: "Categories", icon: Tag },
               { id: "comments", label: "Comments", icon: MessageSquare },
+              { id: "analytics", label: "Analytics", icon: TrendingUp },
               ...(user?.role === "admin" ? [{ id: "users", label: "Users", icon: Users }] : []),
             ].map((tab) => (
               <button
@@ -662,6 +670,140 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Analytics Tab */}
+        {selectedTab === "analytics" && analytics && (
+          <div className="space-y-6">
+            {/* Analytics Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                    <Eye className="text-blue-600 dark:text-blue-400" size={24} />
+                  </div>
+                  <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    {stats.totalSiteVisits.toLocaleString()}
+                  </span>
+                </div>
+                <h3 className="text-gray-700 dark:text-gray-300 font-semibold">Total Site Visits</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">All time</p>
+              </div>
+
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                    <TrendingUp className="text-green-600 dark:text-green-400" size={24} />
+                  </div>
+                  <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    {stats.siteVisitsToday.toLocaleString()}
+                  </span>
+                </div>
+                <h3 className="text-gray-700 dark:text-gray-300 font-semibold">Visits Today</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {analytics.uniqueVisitorsToday} unique
+                </p>
+              </div>
+
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                    <Clock className="text-purple-600 dark:text-purple-400" size={24} />
+                  </div>
+                  <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    {stats.siteVisitsThisWeek.toLocaleString()}
+                  </span>
+                </div>
+                <h3 className="text-gray-700 dark:text-gray-300 font-semibold">This Week</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Last 7 days</p>
+              </div>
+
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                    <Eye className="text-orange-600 dark:text-orange-400" size={24} />
+                  </div>
+                  <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    {stats.totalViews.toLocaleString()}
+                  </span>
+                </div>
+                <h3 className="text-gray-700 dark:text-gray-300 font-semibold">Total Post Views</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">All posts</p>
+              </div>
+            </div>
+
+            {/* Most Viewed Posts */}
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                Most Viewed Posts
+              </h2>
+              <div className="space-y-4">
+                {analytics.mostViewedPosts && analytics.mostViewedPosts.length > 0 ? (
+                  analytics.mostViewedPosts.map((post, index) => (
+                    <div
+                      key={post.id}
+                      className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <span className="text-2xl font-bold text-gray-400 dark:text-gray-600 w-8">
+                          #{index + 1}
+                        </span>
+                        <Link
+                          to={`/posts/${post.id}`}
+                          className="flex-1 min-w-0"
+                        >
+                          <h3 className="font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 truncate">
+                            {post.title}
+                          </h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {new Date(post.createdAt).toLocaleDateString()}
+                          </p>
+                        </Link>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-semibold">
+                        <Eye size={18} className="text-blue-600 dark:text-blue-400" />
+                        <span>{post.viewCount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                    No view data available yet
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Visits by Day Chart */}
+            {analytics.visitsByDay && analytics.visitsByDay.length > 0 && (
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                  Visits Over Time (Last 30 Days)
+                </h2>
+                <div className="space-y-2">
+                  {analytics.visitsByDay.slice(-10).map((day) => (
+                    <div key={day.date} className="flex items-center gap-4">
+                      <span className="text-sm text-gray-600 dark:text-gray-400 w-24">
+                        {new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
+                      <div className="flex-1">
+                        <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-8 overflow-hidden">
+                          <div
+                            className="bg-blue-600 dark:bg-blue-500 h-full flex items-center justify-end pr-2 text-white text-xs font-semibold transition-all"
+                            style={{
+                              width: `${Math.max((parseInt(day.count) / Math.max(...analytics.visitsByDay.map(d => parseInt(d.count)))) * 100, 5)}%`
+                            }}
+                          >
+                            {day.count}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

@@ -38,6 +38,11 @@ export default function PostDetailPage() {
         setCount(c.count || 0);
         setComments(commentsData || []);
         setError("");
+
+        // Track post view (don't await, fire and forget)
+        api.analytics.incrementPostView(id).catch(() => {
+          // Silently fail if tracking fails
+        });
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));

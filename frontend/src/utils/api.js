@@ -73,6 +73,12 @@ export const api = {
         get: (id, token) => request(`/categories/${id}`, { token }),
         update: (id, payload, token) => request(`/categories/${id}`, { method: 'PUT', body: payload, token }),
         remove: (id, token) => request(`/categories/${id}`, { method: 'DELETE', token })
+    },
+    analytics: {
+        trackVisit: (payload) => request('/analytics/visit', { method: 'POST', body: payload }),
+        incrementPostView: (postId) => request(`/posts/${postId}/view`, { method: 'POST' }),
+        getSiteStats: (token) => request('/analytics/stats', { token }),
+        getTopPages: (limit = 10, token) => request(`/analytics/top-pages?limit=${limit}`, { token })
     }
 };
 

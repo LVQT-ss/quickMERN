@@ -8,6 +8,7 @@ import postsRoutes from './routes/posts.route.js';
 import commentsRoutes from './routes/comments.route.js';
 import postLikesRoutes from './routes/postLikes.route.js';
 import categoryRoutes from './routes/category.route.js';
+import analyticsRoutes from './routes/analytics.route.js';
 import initDB from './database/init.js';
 import './models/associations.js';
 
@@ -25,6 +26,7 @@ app.use('/api', postsRoutes);
 app.use('/api', commentsRoutes);
 app.use('/api', postLikesRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api', analyticsRoutes);
 
 
 initDB().then(() => {

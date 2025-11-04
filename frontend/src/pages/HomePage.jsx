@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../utils/api.js";
-import { TrendingUp, Heart, MessageCircle } from "lucide-react";
+import { TrendingUp, Heart, MessageCircle, Eye } from "lucide-react";
 export default function HomePage() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -34,6 +34,16 @@ export default function HomePage() {
         setCategories(categoriesData);
         setTrendingPosts(trendingData);
         setError("");
+
+        // Track site visit (fire and forget)
+        api.analytics
+          .trackVisit({
+            page: "/",
+            referrer: document.referrer,
+          })
+          .catch(() => {
+            // Silently fail if tracking fails
+          });
       } catch (err) {
         setError(err.message);
       } finally {
@@ -297,6 +307,13 @@ export default function HomePage() {
                         {post.introduction}
                       </p>
                       <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        <div className="flex items-center gap-1">
+                          <Eye
+                            size={16}
+                            className="text-gray-500 dark:text-gray-400"
+                          />
+                          <span>{post.viewCount || 0}</span>
+                        </div>
                         <div className="flex items-center gap-1">
                           <Heart size={16} className="text-red-500" />
                           <span>{post.totalLikes || 0}</span>
