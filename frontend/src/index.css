@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Configure Tailwind v4 */
+@theme {
+  /* Dark mode configuration */
+  --color-scheme: light dark;
+}
+
+/* Set dark mode to use class strategy */
+@variant dark (&:where(.dark, .dark *));
+
 /* Global dark mode styles */
 @layer base {
   body {
@@ -18,4 +27,18 @@
   ::-webkit-scrollbar-thumb {
     @apply bg-gray-300 dark:bg-gray-700 rounded-full hover:bg-gray-400 dark:hover:bg-gray-600;
   }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-in-out;
 }

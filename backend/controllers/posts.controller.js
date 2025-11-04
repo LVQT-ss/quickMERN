@@ -98,6 +98,54 @@ export const getPosts = async (req, res) => {
     }
 };
 
+export const getTrendingPosts = async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 5;
+        const posts = await Post.findAll({
+            where: { status: 'published' },
+            include: [
+                { model: User, attributes: ['id', 'username'] },
+                { model: Category, through: { attributes: [] } }
+            ],
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM post_likes AS pl
+                            WHERE pl.post_id = "Post"."id"
+                        )`),
+                        'totalLikes'
+                    ],
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM comments AS c
+                            WHERE c.post_id = "Post"."id"
+                        )`),
+                        'totalComments'
+                    ]
+                ]
+            },
+            order: [
+                [
+                    sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM post_likes AS pl
+                        WHERE pl.post_id = "Post"."id"
+                    )`),
+                    'DESC'
+                ],
+                ['createdAt', 'DESC']
+            ],
+            limit
+        });
+        res.json(posts);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const getPostById = async (req, res) => {
     try {
         const post = await Post.findByPk(req.params.id, {

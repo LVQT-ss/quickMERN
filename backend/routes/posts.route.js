@@ -3,6 +3,7 @@ import { verifyToken } from '../middleware/auth.middleware.js';
 import {
     createPost,
     getPosts,
+    getTrendingPosts,
     getPostById,
     updatePost,
     deletePost,
@@ -62,6 +63,21 @@ router.post('/posts', verifyToken, createPost);
  *       200: { description: List of posts }
  */
 router.get('/posts', getPosts);
+/**
+ * @swagger
+ * /api/posts/trending:
+ *   get:
+ *     tags: [Posts]
+ *     summary: Get trending posts (most liked)
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, default: 5 }
+ *         description: Number of trending posts to return
+ *     responses:
+ *       200: { description: List of trending posts }
+ */
+router.get('/posts/trending', getTrendingPosts);
 /**
  * @swagger
  * /api/posts/{id}:

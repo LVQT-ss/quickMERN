@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../utils/api.js";
-import { TrendingUp, Tag, Heart, MessageCircle } from "lucide-react";
+import { TrendingUp, Heart, MessageCircle } from "lucide-react";
 export default function HomePage() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [featuredPost, setFeaturedPost] = useState(null);
+  const [trendingPosts, setTrendingPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,9 +16,10 @@ export default function HomePage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [postsData, categoriesData] = await Promise.all([
+        const [postsData, categoriesData, trendingData] = await Promise.all([
           api.posts.list({ status: "published" }),
           api.categories.list(),
+          api.posts.trending(5),
         ]);
 
         // Set featured post (most recent)
@@ -30,6 +32,7 @@ export default function HomePage() {
         }
 
         setCategories(categoriesData);
+        setTrendingPosts(trendingData);
         setError("");
       } catch (err) {
         setError(err.message);
@@ -66,28 +69,21 @@ export default function HomePage() {
     ).length;
   };
 
-  // Fake trending topics for demo purposes
-  const trendingTopics = [
-    { name: "React", count: 47 },
-    { name: "JavaScript", count: 38 },
-    { name: "Web Development", count: 29 },
-    { name: "Node.js", count: 22 },
-    { name: "CSS", count: 18 },
-  ];
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading posts...</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">
+            Loading posts...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Error Message */}
       {error && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -112,20 +108,20 @@ export default function HomePage() {
 
       {/* Hero Section */}
       {featuredPost && (
-        <section className="bg-white border-b border-gray-200">
+        <section className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 bg-blue-100 rounded-full mb-4">
+                <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
                   Featured Post
                 </span>
-                <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                   {featuredPost.title}
                 </h2>
-                <p className="text-gray-600 text-lg mb-6">
+                <p className="text-gray-600 dark:text-gray-400 text-lg mb-6">
                   {featuredPost.introduction}
                 </p>
-                <div className="flex items-center text-sm text-gray-500 mb-6">
+                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6">
                   <span>
                     By{" "}
                     {featuredPost.User?.username ||
@@ -144,7 +140,7 @@ export default function HomePage() {
                     )}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600 mb-6">
+                <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
                   <div className="flex items-center gap-1">
                     <Heart size={18} className="text-red-500" />
                     <span>{featuredPost.totalLikes || 0} likes</span>
@@ -156,7 +152,7 @@ export default function HomePage() {
                 </div>
                 <Link
                   to={`/posts/${featuredPost.id}`}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block"
+                  className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors inline-block"
                 >
                   Read More
                 </Link>
@@ -197,9 +193,11 @@ export default function HomePage() {
           {/* Blog Posts Grid */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Latest Posts</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Latest Posts
+              </h3>
               {searchQuery && (
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
                   {filteredPosts.length}{" "}
                   {filteredPosts.length === 1 ? "result" : "results"}
                 </span>
@@ -207,9 +205,9 @@ export default function HomePage() {
             </div>
 
             {filteredPosts.length === 0 && !featuredPost ? (
-              <div className="bg-white rounded-lg shadow-md p-12 text-center">
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-12 text-center">
                 <svg
-                  className="w-16 h-16 mx-auto text-gray-400 mb-4"
+                  className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -221,10 +219,10 @@ export default function HomePage() {
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   {searchQuery ? "No posts found" : "No posts yet"}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   {searchQuery
                     ? `No posts match "${searchQuery}"`
                     : "Check back later for new content"}
@@ -243,7 +241,7 @@ export default function HomePage() {
                 {filteredPosts.map((post) => (
                   <article
                     key={post.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                    className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
                   >
                     {post.banner ? (
                       <img
@@ -270,14 +268,14 @@ export default function HomePage() {
                     )}
                     <div className="p-6">
                       {post.Categories && post.Categories.length > 0 && (
-                        <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded mb-3">
+                        <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded mb-3">
                           {post.Categories[0].name}
                         </span>
                       )}
-                      <h4 className="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+                      <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                         <Link to={`/posts/${post.id}`}>{post.title}</Link>
                       </h4>
-                      <div className="flex items-center text-sm text-gray-500 mb-3">
+                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
                         <span>
                           {post.User?.username ||
                             post.User?.name ||
@@ -295,10 +293,10 @@ export default function HomePage() {
                           )}
                         </span>
                       </div>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
+                      <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
                         {post.introduction}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
                         <div className="flex items-center gap-1">
                           <Heart size={16} className="text-red-500" />
                           <span>{post.totalLikes || 0}</span>
@@ -310,7 +308,7 @@ export default function HomePage() {
                       </div>
                       <Link
                         to={`/posts/${post.id}`}
-                        className="text-blue-600 font-semibold hover:text-blue-700 transition-colors inline-flex items-center"
+                        className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors inline-flex items-center"
                       >
                         Read More
                         <svg
@@ -337,20 +335,22 @@ export default function HomePage() {
           {/* Sidebar */}
           <aside className="space-y-8">
             {/* Search */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h4 className="text-lg font-bold text-gray-900 mb-4">Search</h4>
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+              <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+                Search
+              </h4>
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Search posts..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 dark:placeholder-gray-400"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-10 top-2.5 text-gray-400 hover:text-gray-600"
+                    className="absolute right-10 top-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                     title="Clear search"
                   >
                     <svg
@@ -368,7 +368,7 @@ export default function HomePage() {
                     </svg>
                   </button>
                 )}
-                <button className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+                <button className="absolute right-3 top-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -385,45 +385,54 @@ export default function HomePage() {
                 </button>
               </div>
               {searchQuery && (
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                   Found {filteredPosts.length}{" "}
                   {filteredPosts.length === 1 ? "result" : "results"}
                 </p>
               )}
             </div>
 
-            {/* Trending Topics */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <div className="flex items-center gap-2 mb-6">
-                <TrendingUp size={24} className="text-blue-600" />
-                <h3 className="text-2xl font-bold text-slate-900">
-                  Trending Topics
-                </h3>
-              </div>
-              <div className="space-y-3">
-                {trendingTopics.map((topic, index) => (
-                  <button
-                    key={index}
-                    className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors group"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Tag size={16} className="text-blue-600" />
-                      <span className="font-medium text-slate-700 group-hover:text-blue-600">
-                        {topic.name}
+            {/* Trending Posts (Most Liked) */}
+            {trendingPosts.length > 0 && (
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg">
+                <div className="flex items-center gap-2 mb-6">
+                  <TrendingUp
+                    size={24}
+                    className="text-blue-600 dark:text-blue-400"
+                  />
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-gray-100">
+                    Trending Posts
+                  </h3>
+                </div>
+                <div className="space-y-3">
+                  {trendingPosts.map((post) => (
+                    <Link
+                      key={post.id}
+                      to={`/posts/${post.id}`}
+                      className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors group"
+                    >
+                      <span className="flex items-center gap-2 flex-1 min-w-0">
+                        <Heart
+                          size={16}
+                          className="text-red-500 flex-shrink-0"
+                        />
+                        <span className="font-medium text-slate-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">
+                          {post.title}
+                        </span>
                       </span>
-                    </span>
-                    <span className="text-slate-500 text-sm">
-                      {topic.count}
-                    </span>
-                  </button>
-                ))}
+                      <span className="text-slate-500 dark:text-gray-400 text-sm ml-2 flex-shrink-0">
+                        {post.totalLikes || 0}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Recent Posts */}
             {recentPosts.length > 0 && (
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-4">
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+                <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
                   Recent Posts
                 </h4>
                 <ul className="space-y-3">
@@ -431,10 +440,10 @@ export default function HomePage() {
                     <li key={post.id}>
                       <Link
                         to={`/posts/${post.id}`}
-                        className="text-gray-700 hover:text-blue-600 transition-colors"
+                        className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
                         <div className="font-medium">{post.title}</div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           {new Date(post.createdAt).toLocaleDateString(
                             "en-US",
                             {
@@ -453,8 +462,8 @@ export default function HomePage() {
 
             {/* Categories */}
             {categories.length > 0 && (
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-4">
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+                <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
                   Categories
                 </h4>
                 <ul className="space-y-2">
@@ -464,10 +473,10 @@ export default function HomePage() {
                       <li key={category.id}>
                         <Link
                           to={`/posts?category=${category.id}`}
-                          className="flex justify-between items-center text-gray-700 hover:text-blue-600 transition-colors py-1"
+                          className="flex justify-between items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1"
                         >
                           <span>{category.name}</span>
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-gray-500 dark:text-gray-400">
                             ({count})
                           </span>
                         </Link>

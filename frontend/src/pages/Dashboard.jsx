@@ -158,9 +158,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white">
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 dark:from-blue-700 dark:via-indigo-700 dark:to-purple-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-between">
             <div>
@@ -195,7 +195,7 @@ export default function Dashboard() {
       {/* Error Message */}
       {error && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
+          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 p-4 rounded-lg">
             <div className="flex items-center">
               <AlertCircle className="mr-2" size={20} />
               <span className="font-medium">{error}</span>
@@ -207,7 +207,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-md mb-8">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md mb-8">
           <div className="flex overflow-x-auto">
             {[
               { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -221,8 +221,8 @@ export default function Dashboard() {
                 onClick={() => setSelectedTab(tab.id)}
                 className={`flex items-center gap-2 px-6 py-4 font-semibold transition-colors border-b-2 whitespace-nowrap ${
                   selectedTab === tab.id
-                    ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    ? "border-blue-600 text-blue-600 dark:text-blue-400"
+                    : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                 }`}
               >
                 <tab.icon size={20} />
@@ -237,7 +237,7 @@ export default function Dashboard() {
           <div className="space-y-8">
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-blue-100 rounded-lg">
                     <FileText className="text-blue-600" size={24} />
@@ -250,7 +250,7 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-purple-100 rounded-lg">
                     <Tag className="text-purple-600" size={24} />
@@ -261,7 +261,7 @@ export default function Dashboard() {
                 <p className="text-sm text-gray-500 mt-1">Active categories</p>
               </div>
 
-              <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-green-100 rounded-lg">
                     <Heart className="text-green-600" size={24} />
@@ -274,7 +274,7 @@ export default function Dashboard() {
                 <p className="text-sm text-gray-500 mt-1">Across all posts</p>
               </div>
 
-              <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-orange-100 rounded-lg">
                     <MessageSquare className="text-orange-600" size={24} />
@@ -288,7 +288,7 @@ export default function Dashboard() {
 
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Recent Posts */}
-              <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold text-gray-900">Recent Posts</h2>
                   <Link to="/posts" className="text-blue-600 hover:text-blue-700 font-medium text-sm">
@@ -338,7 +338,7 @@ export default function Dashboard() {
               </div>
 
               {/* Top Posts */}
-              <div className="bg-white rounded-xl shadow-md p-6">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <TrendingUp className="text-orange-500" size={24} />
@@ -406,7 +406,7 @@ export default function Dashboard() {
         {selectedTab === "posts" && (
           <div className="space-y-6">
             {/* Filters */}
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -561,7 +561,7 @@ export default function Dashboard() {
         {/* Categories Tab */}
         {selectedTab === "categories" && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">All Categories</h2>
                 <Link
@@ -620,7 +620,7 @@ export default function Dashboard() {
         {/* Comments Tab */}
         {selectedTab === "comments" && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">All Comments</h2>
 
               <div className="space-y-4">

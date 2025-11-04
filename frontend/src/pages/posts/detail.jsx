@@ -21,6 +21,8 @@ export default function PostDetailPage() {
   const [newComment, setNewComment] = useState("");
   const [replyTo, setReplyTo] = useState(null);
   const [submittingComment, setSubmittingComment] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -128,6 +130,29 @@ export default function PostDetailPage() {
     return Math.ceil(totalWords / wordsPerMinute);
   }, [post, sections]);
 
+  const openLightbox = (imageUrl, caption = "") => {
+    setLightboxImage({ url: imageUrl, caption });
+    setLightboxOpen(true);
+    document.body.style.overflow = "hidden"; // Prevent scrolling
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    setLightboxImage(null);
+    document.body.style.overflow = "auto"; // Restore scrolling
+  };
+
+  // Close lightbox on escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && lightboxOpen) {
+        closeLightbox();
+      }
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [lightboxOpen]);
+
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!user) {
@@ -188,10 +213,10 @@ export default function PostDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mb-4"></div>
-          <p className="text-gray-600 font-medium text-lg">
+          <p className="text-gray-600 dark:text-gray-400 font-medium text-lg">
             Loading article...
           </p>
         </div>
@@ -201,10 +226,10 @@ export default function PostDetailPage() {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
           <svg
-            className="w-24 h-24 mx-auto text-gray-400 mb-6"
+            className="w-24 h-24 mx-auto text-gray-400 dark:text-gray-600 mb-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -216,15 +241,15 @@ export default function PostDetailPage() {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
             Article Not Found
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             The article you're looking for doesn't exist or has been removed.
           </p>
           <Link
             to="/"
-            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold text-lg"
+            className="inline-flex items-center text-blue-600 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 font-semibold text-lg"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -247,20 +272,23 @@ export default function PostDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-800 z-50">
         <div
-          className="h-full bg-blue-600 transition-all duration-150"
+          className="h-full bg-blue-600 dark:bg-blue-500 transition-all duration-150"
           style={{ width: `${readingProgress}%` }}
         ></div>
       </div>
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <nav className="flex items-center text-sm text-gray-500 space-x-2">
-            <Link to="/" className="hover:text-blue-600 transition-colors">
+          <nav className="flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-2">
+            <Link
+              to="/"
+              className="hover:text-blue-600 dark:hover:text-blue-500 transition-colors"
+            >
               Home
             </Link>
             <svg
@@ -280,7 +308,7 @@ export default function PostDetailPage() {
               <>
                 <Link
                   to={`/posts?category=${post.Categories[0].id}`}
-                  className="hover:text-blue-600 transition-colors"
+                  className="hover:text-blue-600 dark:hover:text-blue-500 transition-colors"
                 >
                   {post.Categories[0].name}
                 </Link>
@@ -299,7 +327,9 @@ export default function PostDetailPage() {
                 </svg>
               </>
             )}
-            <span className="text-gray-900 font-medium truncate">Article</span>
+            <span className="text-gray-900 dark:text-gray-100 font-medium truncate">
+              Article
+            </span>
           </nav>
         </div>
       </div>
@@ -307,7 +337,7 @@ export default function PostDetailPage() {
       {/* Error Message */}
       {error && (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-sm">
+          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-600 text-red-700 dark:text-red-400 p-4 rounded-lg shadow-sm">
             <div className="flex items-center">
               <svg
                 className="w-5 h-5 mr-3 flex-shrink-0"
@@ -332,15 +362,36 @@ export default function PostDetailPage() {
           {/* Main Article */}
           <article className="lg:col-span-9">
             {/* Article Header */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden mb-8">
               {/* Featured Banner */}
               {post.banner ? (
-                <div className="w-full aspect-video overflow-hidden bg-gray-900">
+                <div
+                  className="w-full aspect-video overflow-hidden bg-gray-900 relative group cursor-pointer"
+                  onClick={() => openLightbox(post.banner, post.title)}
+                >
                   <img
                     src={post.banner}
                     alt={post.title}
                     className="w-full h-full object-contain bg-gray-900"
                   />
+                  {/* Fullscreen button overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-800/90 rounded-full p-4 shadow-2xl">
+                      <svg
+                        className="w-8 h-8 text-gray-900 dark:text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="w-full aspect-video bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 flex items-center justify-center">
@@ -368,25 +419,25 @@ export default function PostDetailPage() {
                     <Link
                       key={category.id}
                       to={`/posts?category=${category.id}`}
-                      className="inline-flex items-center px-3 py-1.5 text-sm font-semibold text-blue-700 bg-blue-50 rounded-full hover:bg-blue-100 transition-colors"
+                      className="inline-flex items-center px-3 py-1.5 text-sm font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
                     >
                       {category.name}
                     </Link>
                   ))}
                   {post.status === "draft" && (
-                    <span className="inline-flex items-center px-3 py-1.5 text-sm font-semibold text-amber-700 bg-amber-50 rounded-full">
+                    <span className="inline-flex items-center px-3 py-1.5 text-sm font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 rounded-full">
                       Draft
                     </span>
                   )}
                 </div>
 
                 {/* Title - with word break */}
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6 break-words">
+                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight mb-6 break-words">
                   {post.title}
                 </h1>
 
                 {/* Author Info & Meta */}
-                <div className="flex items-center justify-between flex-wrap gap-4 pb-6 border-b border-gray-200">
+                <div className="flex items-center justify-between flex-wrap gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
                   <div className="flex items-center space-x-4">
                     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md flex-shrink-0">
                       {(post.User?.username ||
@@ -394,10 +445,10 @@ export default function PostDetailPage() {
                         "A")[0].toUpperCase()}
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900 text-lg">
+                      <div className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
                         {post.User?.username || post.User?.name || "Anonymous"}
                       </div>
-                      <div className="flex items-center text-sm text-gray-600 space-x-3">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 space-x-3">
                         <span className="flex items-center">
                           <svg
                             className="w-4 h-4 mr-1"
@@ -448,8 +499,8 @@ export default function PostDetailPage() {
                       onClick={toggle}
                       className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all ${
                         liked
-                          ? "bg-red-50 text-red-600 hover:bg-red-100"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          ? "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50"
+                          : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                       }`}
                     >
                       <svg
@@ -472,8 +523,8 @@ export default function PostDetailPage() {
                       onClick={() => setBookmarked(!bookmarked)}
                       className={`p-2 rounded-lg transition-all ${
                         bookmarked
-                          ? "bg-blue-50 text-blue-600"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                          : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                       }`}
                       title="Bookmark"
                     >
@@ -497,7 +548,7 @@ export default function PostDetailPage() {
                     <div className="relative">
                       <button
                         onClick={() => setShowShareMenu(!showShareMenu)}
-                        className="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
+                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
                         title="Share"
                       >
                         <svg
@@ -516,10 +567,10 @@ export default function PostDetailPage() {
                       </button>
 
                       {showShareMenu && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-10">
+                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-10">
                           <button
                             onClick={() => handleShare("twitter")}
-                            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 flex items-center"
+                            className="w-full px-4 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center"
                           >
                             <svg
                               className="w-5 h-5 mr-3 text-blue-400"
@@ -532,7 +583,7 @@ export default function PostDetailPage() {
                           </button>
                           <button
                             onClick={() => handleShare("facebook")}
-                            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 flex items-center"
+                            className="w-full px-4 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center"
                           >
                             <svg
                               className="w-5 h-5 mr-3 text-blue-600"
@@ -545,7 +596,7 @@ export default function PostDetailPage() {
                           </button>
                           <button
                             onClick={() => handleShare("linkedin")}
-                            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 flex items-center"
+                            className="w-full px-4 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center"
                           >
                             <svg
                               className="w-5 h-5 mr-3 text-blue-700"
@@ -558,10 +609,10 @@ export default function PostDetailPage() {
                           </button>
                           <button
                             onClick={handleCopyLink}
-                            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 flex items-center"
+                            className="w-full px-4 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center"
                           >
                             <svg
-                              className="w-5 h-5 mr-3 text-gray-600"
+                              className="w-5 h-5 mr-3 text-gray-600 dark:text-gray-400"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -583,8 +634,8 @@ export default function PostDetailPage() {
 
                 {/* Introduction */}
                 {post.introduction && (
-                  <div className="mt-8 bg-blue-50 border-l-4 border-blue-600 p-6 rounded-r-lg">
-                    <p className="text-xl text-gray-800 leading-relaxed font-medium break-words">
+                  <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-500 p-6 rounded-r-lg">
+                    <p className="text-xl text-gray-800 dark:text-gray-200 leading-relaxed font-medium break-words">
                       {post.introduction}
                     </p>
                   </div>
@@ -618,16 +669,16 @@ export default function PostDetailPage() {
                       <div
                         key={section.id}
                         id={`section-${section.id}`}
-                        className="bg-white rounded-xl shadow-lg p-8 lg:p-10 overflow-hidden"
+                        className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 lg:p-10 overflow-hidden"
                       >
                         {/* Section Title with word break */}
-                        <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6 pb-4 border-b-2 border-gray-100 break-words">
+                        <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 pb-4 border-b-2 border-gray-100 dark:border-gray-800 break-words">
                           {section.title}
                         </h2>
 
                         {/* Section Content with word break */}
                         <div className="prose prose-lg max-w-none">
-                          <div className="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap break-words overflow-wrap-anywhere">
+                          <div className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg whitespace-pre-wrap break-words overflow-wrap-anywhere">
                             {section.content}
                           </div>
                         </div>
@@ -639,16 +690,40 @@ export default function PostDetailPage() {
                               <div
                                 key={img.id}
                                 className="group cursor-pointer"
+                                onClick={() =>
+                                  openLightbox(
+                                    (img.imageUrl ?? img.image_url) || "",
+                                    img.caption || ""
+                                  )
+                                }
                               >
-                                <div className="overflow-hidden rounded-xl shadow-md hover:shadow-2xl transition-all duration-300">
+                                <div className="overflow-hidden rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 relative">
                                   <img
                                     src={(img.imageUrl ?? img.image_url) || ""}
                                     alt={img.caption || "Section image"}
                                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
                                   />
+                                  {/* Fullscreen icon overlay */}
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                      <svg
+                                        className="w-12 h-12 text-white drop-shadow-lg"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
                                 </div>
                                 {img.caption && (
-                                  <p className="text-sm text-gray-600 italic mt-3 text-center px-2 break-words">
+                                  <p className="text-sm text-gray-600 dark:text-gray-400 italic mt-3 text-center px-2 break-words">
                                     {img.caption}
                                   </p>
                                 )}
@@ -666,8 +741,8 @@ export default function PostDetailPage() {
             {images.filter(
               (img) => (img.sectionId ?? img.section_id ?? null) == null
             ).length > 0 && (
-              <div className="bg-white rounded-xl shadow-lg p-8 lg:p-10 mt-6">
-                <h2 className="text-3xl font-bold text-gray-900 mb-6 pb-4 border-b-2 border-gray-100">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 lg:p-10 mt-6">
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 pb-4 border-b-2 border-gray-100 dark:border-gray-800">
                   Image Gallery
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -681,16 +756,43 @@ export default function PostDetailPage() {
                         (b.orderIndex ?? b.order_index ?? 0)
                     )
                     .map((img) => (
-                      <div key={img.id} className="group cursor-pointer">
-                        <div className="overflow-hidden rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 bg-gray-100">
+                      <div
+                        key={img.id}
+                        className="group cursor-pointer"
+                        onClick={() =>
+                          openLightbox(
+                            (img.imageUrl ?? img.image_url) || "",
+                            img.caption || ""
+                          )
+                        }
+                      >
+                        <div className="overflow-hidden rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 bg-gray-100 dark:bg-gray-800 relative">
                           <img
                             src={(img.imageUrl ?? img.image_url) || ""}
                             alt={img.caption || "Gallery image"}
                             className="w-full h-64 object-contain group-hover:scale-110 transition-transform duration-300"
                           />
+                          {/* Fullscreen icon overlay */}
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <svg
+                                className="w-12 h-12 text-white drop-shadow-lg"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                                />
+                              </svg>
+                            </div>
+                          </div>
                         </div>
                         {img.caption && (
-                          <p className="text-sm text-gray-600 italic mt-3 text-center break-words">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 italic mt-3 text-center break-words">
                             {img.caption}
                           </p>
                         )}
@@ -702,10 +804,10 @@ export default function PostDetailPage() {
 
             {/* Tags Section */}
             {post.Categories && post.Categories.length > 0 && (
-              <div className="bg-white rounded-xl shadow-lg p-8 mt-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 mt-6">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
                   <svg
-                    className="w-5 h-5 mr-2 text-blue-600"
+                    className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -724,7 +826,7 @@ export default function PostDetailPage() {
                     <Link
                       key={category.id}
                       to={`/posts?category=${category.id}`}
-                      className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full hover:bg-blue-100 hover:text-blue-700 transition-colors"
+                      className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
                     >
                       #{category.name}
                     </Link>
@@ -734,7 +836,7 @@ export default function PostDetailPage() {
             )}
 
             {/* Author Bio Section */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-8 mt-8 border border-blue-100">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-lg p-8 mt-8 border border-blue-100 dark:border-blue-900/50">
               <div className="flex items-start space-x-6">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg flex-shrink-0">
                   {(post.User?.username ||
@@ -742,11 +844,11 @@ export default function PostDetailPage() {
                     "A")[0].toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                     Written by{" "}
                     {post.User?.username || post.User?.name || "Anonymous"}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed mb-4">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                     Passionate writer and technology enthusiast. Sharing
                     knowledge and insights to help developers grow and succeed
                     in their journey.
@@ -754,7 +856,7 @@ export default function PostDetailPage() {
                   <div className="flex items-center space-x-4">
                     <a
                       href="#"
-                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                      className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 transition-colors"
                     >
                       <svg
                         className="w-5 h-5"
@@ -766,7 +868,7 @@ export default function PostDetailPage() {
                     </a>
                     <a
                       href="#"
-                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                      className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 transition-colors"
                     >
                       <svg
                         className="w-5 h-5"
@@ -778,7 +880,7 @@ export default function PostDetailPage() {
                     </a>
                     <a
                       href="#"
-                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                      className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 transition-colors"
                     >
                       <svg
                         className="w-5 h-5"
@@ -796,14 +898,17 @@ export default function PostDetailPage() {
             {/* Comments Section */}
             <div
               id="comments"
-              className="bg-white rounded-xl shadow-lg p-8 mt-8"
+              className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 mt-8"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <MessageCircle className="mr-2 text-blue-600" size={28} />
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                  <MessageCircle
+                    className="mr-2 text-blue-600 dark:text-blue-500"
+                    size={28}
+                  />
                   Comments ({comments.length})
                 </h3>
-                <div className="flex items-center gap-3 text-sm text-gray-600">
+                <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
                   <div className="flex items-center gap-1">
                     <Heart size={18} className="text-red-500" />
                     <span>{post?.totalLikes || count} likes</span>
@@ -820,9 +925,9 @@ export default function PostDetailPage() {
               {/* Comment Form */}
               <div className="mb-8">
                 {replyTo && (
-                  <div className="mb-3 p-3 bg-blue-50 border-l-4 border-blue-600 rounded-r">
+                  <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-500 rounded-r">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-700">
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
                         Replying to{" "}
                         <span className="font-semibold">
                           {replyTo.User?.username || "user"}
@@ -830,7 +935,7 @@ export default function PostDetailPage() {
                       </span>
                       <button
                         onClick={() => setReplyTo(null)}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                       >
                         <svg
                           className="w-4 h-4"
@@ -863,7 +968,7 @@ export default function PostDetailPage() {
                         user ? "Write a comment..." : "Please log in to comment"
                       }
                       disabled={!user || submittingComment}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent resize-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                       rows="3"
                     />
                     <div className="flex justify-end mt-2">
@@ -872,7 +977,7 @@ export default function PostDetailPage() {
                         disabled={
                           !user || submittingComment || !newComment.trim()
                         }
-                        className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Send size={18} />
                         {submittingComment
@@ -892,12 +997,12 @@ export default function PostDetailPage() {
                   <div className="text-center py-12">
                     <MessageCircle
                       size={48}
-                      className="mx-auto text-gray-300 mb-4"
+                      className="mx-auto text-gray-300 dark:text-gray-700 mb-4"
                     />
-                    <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                    <h4 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                       No comments yet
                     </h4>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 dark:text-gray-400">
                       Be the first to share your thoughts!
                     </p>
                   </div>
@@ -905,7 +1010,7 @@ export default function PostDetailPage() {
                   organizedComments.map((comment) => (
                     <div
                       key={comment.id}
-                      className="border-b border-gray-200 pb-6 last:border-0"
+                      className="border-b border-gray-200 dark:border-gray-800 pb-6 last:border-0"
                     >
                       {/* Parent Comment */}
                       <div className="flex gap-4">
@@ -916,10 +1021,10 @@ export default function PostDetailPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="font-semibold text-gray-900">
+                            <span className="font-semibold text-gray-900 dark:text-gray-100">
                               {comment.User?.username || "Anonymous"}
                             </span>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
                               {new Date(
                                 comment.createdAt || comment.created_at
                               ).toLocaleDateString("en-US", {
@@ -931,13 +1036,13 @@ export default function PostDetailPage() {
                               })}
                             </span>
                           </div>
-                          <p className="text-gray-700 mb-3 break-words">
+                          <p className="text-gray-700 dark:text-gray-300 mb-3 break-words">
                             {comment.body}
                           </p>
                           <div className="flex items-center gap-4">
                             <button
                               onClick={() => setReplyTo(comment)}
-                              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                              className="text-sm text-blue-600 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 font-medium"
                             >
                               Reply
                             </button>
@@ -948,7 +1053,7 @@ export default function PostDetailPage() {
                                   onClick={() =>
                                     handleDeleteComment(comment.id)
                                   }
-                                  className="text-sm text-red-600 hover:text-red-700 font-medium"
+                                  className="text-sm text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium"
                                 >
                                   Delete
                                 </button>
@@ -957,7 +1062,7 @@ export default function PostDetailPage() {
 
                           {/* Replies */}
                           {comment.replies && comment.replies.length > 0 && (
-                            <div className="mt-4 space-y-4 pl-6 border-l-2 border-gray-200">
+                            <div className="mt-4 space-y-4 pl-6 border-l-2 border-gray-200 dark:border-gray-700">
                               {comment.replies.map((reply) => (
                                 <div key={reply.id} className="flex gap-3">
                                   <div className="flex-shrink-0">
@@ -968,10 +1073,10 @@ export default function PostDetailPage() {
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <span className="font-semibold text-gray-900 text-sm">
+                                      <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
                                         {reply.User?.username || "Anonymous"}
                                       </span>
-                                      <span className="text-xs text-gray-500">
+                                      <span className="text-xs text-gray-500 dark:text-gray-400">
                                         {new Date(
                                           reply.createdAt || reply.created_at
                                         ).toLocaleDateString("en-US", {
@@ -983,13 +1088,13 @@ export default function PostDetailPage() {
                                         })}
                                       </span>
                                     </div>
-                                    <p className="text-gray-700 text-sm mb-2 break-words">
+                                    <p className="text-gray-700 dark:text-gray-300 text-sm mb-2 break-words">
                                       {reply.body}
                                     </p>
                                     <div className="flex items-center gap-4">
                                       <button
                                         onClick={() => setReplyTo(comment)}
-                                        className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                                        className="text-xs text-blue-600 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 font-medium"
                                       >
                                         Reply
                                       </button>
@@ -1000,7 +1105,7 @@ export default function PostDetailPage() {
                                             onClick={() =>
                                               handleDeleteComment(reply.id)
                                             }
-                                            className="text-xs text-red-600 hover:text-red-700 font-medium"
+                                            className="text-xs text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium"
                                           >
                                             Delete
                                           </button>
@@ -1023,7 +1128,7 @@ export default function PostDetailPage() {
             <div className="mt-8 text-center">
               <Link
                 to="/posts"
-                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold text-lg transition-colors group"
+                className="inline-flex items-center text-blue-600 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 font-semibold text-lg transition-colors group"
               >
                 <svg
                   className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform"
@@ -1047,10 +1152,10 @@ export default function PostDetailPage() {
           <aside className="lg:col-span-3 space-y-6">
             {/* Table of Contents */}
             {sections.length > 0 && (
-              <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 sticky top-24">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
                   <svg
-                    className="w-5 h-5 mr-2 text-blue-600"
+                    className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1075,7 +1180,7 @@ export default function PostDetailPage() {
                       <a
                         key={section.id}
                         href={`#section-${section.id}`}
-                        className="block py-2 px-3 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors truncate"
+                        className="block py-2 px-3 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors truncate"
                         title={section.title}
                       >
                         {index + 1}. {section.title}
@@ -1086,8 +1191,8 @@ export default function PostDetailPage() {
             )}
 
             {/* Author Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
                 About the Author
               </h3>
               <div className="flex items-center space-x-4 mb-4">
@@ -1097,26 +1202,28 @@ export default function PostDetailPage() {
                     "A")[0].toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <div className="font-semibold text-gray-900 truncate">
+                  <div className="font-semibold text-gray-900 dark:text-gray-100 truncate">
                     {post.User?.username || post.User?.name || "Anonymous"}
                   </div>
-                  <div className="text-sm text-gray-600">Content Creator</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    Content Creator
+                  </div>
                 </div>
               </div>
-              <p className="text-sm text-gray-700 leading-relaxed mb-4">
+              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                 Technology enthusiast sharing insights and tutorials to help
                 developers succeed.
               </p>
               <div className="flex space-x-3">
                 <a
                   href="#"
-                  className="flex-1 text-center py-2 px-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
+                  className="flex-1 text-center py-2 px-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors text-sm font-semibold"
                 >
                   Follow
                 </a>
                 <a
                   href="#"
-                  className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="p-2 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   <svg
                     className="w-5 h-5"
@@ -1130,25 +1237,107 @@ export default function PostDetailPage() {
             </div>
 
             {/* Newsletter Signup */}
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg p-6 text-white">
+            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-800 rounded-xl shadow-lg p-6 text-white">
               <h3 className="text-xl font-bold mb-2">
                 📬 Subscribe to Newsletter
               </h3>
-              <p className="text-blue-100 text-sm mb-4">
+              <p className="text-blue-100 dark:text-blue-200 text-sm mb-4">
                 Get the latest articles and tutorials delivered to your inbox.
               </p>
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-full px-4 py-3 rounded-lg text-gray-900 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="w-full px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
-              <button className="w-full bg-white text-blue-600 font-semibold py-3 rounded-lg hover:bg-blue-50 transition-colors">
+              <button className="w-full bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 font-semibold py-3 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors">
                 Subscribe Now
               </button>
             </div>
           </aside>
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {lightboxOpen && lightboxImage && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 animate-fadeIn"
+          onClick={closeLightbox}
+        >
+          {/* Close button */}
+          <button
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 z-[10000] bg-white/10 hover:bg-white/20 dark:bg-gray-800/50 dark:hover:bg-gray-700/70 text-white rounded-full p-3 transition-all duration-300 backdrop-blur-sm shadow-2xl group"
+            title="Close (Esc)"
+          >
+            <svg
+              className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+
+          {/* Image container */}
+          <div
+            className="relative w-full h-full flex flex-col items-center justify-center overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Image */}
+            <img
+              src={lightboxImage.url}
+              alt={lightboxImage.caption || "Full screen image"}
+              className="object-contain rounded-lg shadow-2xl"
+              style={{ maxWidth: "none", maxHeight: "none" }}
+            />
+
+            {/* Caption */}
+            {lightboxImage.caption && (
+              <div className="mt-4 px-6 py-3 bg-white/10 dark:bg-gray-800/50 backdrop-blur-md rounded-lg max-w-2xl">
+                <p className="text-white text-center text-sm md:text-base break-words">
+                  {lightboxImage.caption}
+                </p>
+              </div>
+            )}
+
+            {/* Download/Open in new tab button */}
+            <a
+              href={lightboxImage.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors shadow-lg flex items-center gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              Open in New Tab
+            </a>
+          </div>
+
+          {/* Instruction text */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white/70 text-sm">
+            Click anywhere or press{" "}
+            <kbd className="px-2 py-1 bg-white/10 rounded">Esc</kbd> to close
+          </div>
+        </div>
+      )}
     </div>
   );
 }

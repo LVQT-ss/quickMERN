@@ -36,6 +36,7 @@ export const api = {
             const qs = new URLSearchParams(cleaned).toString();
             return request(`/posts${qs ? `?${qs}` : ''}`);
         },
+        trending: (limit = 5) => request(`/posts/trending?limit=${limit}`),
         get: (id) => request(`/posts/${id}`),
         update: (id, payload, token) => request(`/posts/${id}`, { method: 'PUT', body: payload, token }),
         remove: (id, token) => request(`/posts/${id}`, { method: 'DELETE', token }),

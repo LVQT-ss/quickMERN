@@ -35,14 +35,14 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Hero Section */}
-      <div className="bg-linear-65 from-purple-500 to-pink-500 text-white py-20">
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-700 dark:to-pink-700 text-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Welcome to TechBlog
           </h1>
-          <p className="text-xl md:text-2xl text-blue-100">
+          <p className="text-xl md:text-2xl text-blue-100 dark:text-purple-100">
             Your destination for in-depth tech tutorials and step-by-step guides
           </p>
         </div>
@@ -52,10 +52,10 @@ export default function About() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Mission Statement */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
             Why This Blog Exists
           </h2>
-          <div className="prose prose-lg text-gray-700 space-y-4">
+          <div className="prose prose-lg text-gray-700 dark:text-gray-300 space-y-4">
             <p>
               This blog is an extension of my YouTube channel, created
               specifically for people who prefer reading over watching videos. I
@@ -74,14 +74,14 @@ export default function About() {
         </section>
 
         {/* What Makes Us Different */}
-        <section className="mb-16 bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+        <section className="mb-16 bg-white dark:bg-gray-900 rounded-lg shadow-md p-8">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
             What Makes This Blog Special
           </h2>
           <div className="space-y-6">
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 text-white">
+                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 dark:bg-blue-500 text-white">
                   <svg
                     className="h-6 w-6"
                     fill="none"
@@ -98,10 +98,10 @@ export default function About() {
                 </div>
               </div>
               <div className="ml-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   Detailed Step-by-Step Tutorials
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   Every tutorial is broken down into clear, actionable steps. No
                   skipping, no assumptions. Perfect for beginners and
                   experienced developers alike.
@@ -111,7 +111,7 @@ export default function About() {
 
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 text-white">
+                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 dark:bg-blue-500 text-white">
                   <svg
                     className="h-6 w-6"
                     fill="none"
@@ -128,10 +128,10 @@ export default function About() {
                 </div>
               </div>
               <div className="ml-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   Real Screenshots & Images
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   Unlike AI-generated content, every screenshot and image in my
                   tutorials is real and taken during actual implementation.
                   You'll see exactly what you should see on your screen at each
@@ -142,7 +142,7 @@ export default function About() {
 
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 text-white">
+                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 dark:bg-blue-500 text-white">
                   <svg
                     className="h-6 w-6"
                     fill="none"
@@ -159,10 +159,10 @@ export default function About() {
                 </div>
               </div>
               <div className="ml-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   Control Your Learning Time
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   Read at your own pace. Skip ahead if you're familiar with a
                   concept, or slow down when you need more time to understand.
                   The content is always there when you need it.
@@ -172,7 +172,7 @@ export default function About() {
 
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 text-white">
+                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 dark:bg-blue-500 text-white">
                   <svg
                     className="h-6 w-6"
                     fill="none"
@@ -189,10 +189,10 @@ export default function About() {
                 </div>
               </div>
               <div className="ml-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   Easy to Search & Reference
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   Need to find that specific command or configuration? Use
                   Ctrl+F to instantly locate what you're looking for. Try doing
                   that with a video!
@@ -202,7 +202,7 @@ export default function About() {
 
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 text-white">
+                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 dark:bg-blue-500 text-white">
                   <svg
                     className="h-6 w-6"
                     fill="none"
@@ -219,10 +219,10 @@ export default function About() {
                 </div>
               </div>
               <div className="ml-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   Copy-Paste Friendly Code
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   All code snippets are properly formatted and ready to copy. No
                   need to pause videos or type everything manually.
                 </p>
@@ -334,7 +334,7 @@ export default function About() {
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
                 Web Development
               </h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 dark:text-gray-300">
                 Frontend frameworks, backend technologies, full-stack tutorials,
                 and modern web development practices.
               </p>
@@ -343,7 +343,7 @@ export default function About() {
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
                 Programming Languages
               </h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 dark:text-gray-300">
                 Deep dives into JavaScript, Python, and other popular
                 programming languages with practical examples.
               </p>
@@ -352,7 +352,7 @@ export default function About() {
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
                 Tools & Software
               </h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 dark:text-gray-300">
                 Setup guides, configuration tutorials, and tips for development
                 tools and software.
               </p>
@@ -361,7 +361,7 @@ export default function About() {
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
                 Tech Tips & Tricks
               </h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 dark:text-gray-300">
                 Productivity hacks, debugging techniques, and solutions to
                 common development problems.
               </p>
@@ -406,7 +406,9 @@ export default function About() {
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-900">Email</p>
-                    <p className="text-gray-700">your.email@example.com</p>
+                    <p className="text-gray-700 dark:text-gray-300">
+                      your.email@example.com
+                    </p>
                   </div>
                 </div>
 

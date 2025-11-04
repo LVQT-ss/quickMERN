@@ -40,12 +40,7 @@ export default function Header() {
             >
               Articles
             </Link>
-            <Link
-              to="/categories"
-              className="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-            >
-              Categories
-            </Link>
+
             <Link
               to="/about"
               className="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
@@ -264,13 +259,7 @@ export default function Header() {
               >
                 Articles
               </Link>
-              <Link
-                to="/categories"
-                className="px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Categories
-              </Link>
+
               <Link
                 to="/about"
                 className="px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"

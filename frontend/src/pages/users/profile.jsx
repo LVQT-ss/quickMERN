@@ -154,10 +154,10 @@ export default function UserProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mb-4"></div>
-          <p className="text-gray-600 font-medium text-lg">
+          <p className="text-gray-600 dark:text-gray-400 font-medium text-lg">
             Loading profile...
           </p>
         </div>
@@ -167,17 +167,17 @@ export default function UserProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             User not found
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             The user profile you're looking for doesn't exist.
           </p>
           <Link
             to="/"
-            className="text-blue-600 hover:text-blue-700 font-semibold"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
           >
             Go to Homepage
           </Link>
@@ -187,9 +187,9 @@ export default function UserProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Profile Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white">
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 dark:from-blue-700 dark:via-indigo-700 dark:to-purple-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             {/* Avatar */}
@@ -302,7 +302,7 @@ export default function UserProfilePage() {
       {/* Error Message */}
       {error && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
+          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 p-4 rounded-lg">
             <div className="flex items-center">
               <X className="mr-2" size={20} />
               <span className="font-medium">{error}</span>
@@ -313,8 +313,8 @@ export default function UserProfilePage() {
 
       {/* Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-t-xl shadow-md mt-8">
-          <div className="flex border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-900 rounded-t-xl shadow-md mt-8">
+          <div className="flex border-b border-gray-200 dark:border-gray-800">
             {[
               { id: "overview", label: "Overview", icon: TrendingUp },
               { id: "posts", label: "Posts", icon: FileText },
@@ -328,8 +328,8 @@ export default function UserProfilePage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-6 py-4 font-semibold transition-colors border-b-2 ${
                   activeTab === tab.id
-                    ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    ? "border-blue-600 text-blue-600 dark:text-blue-400"
+                    : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                 }`}
               >
                 <tab.icon size={20} />
@@ -340,64 +340,88 @@ export default function UserProfilePage() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-b-xl shadow-md p-8 mb-8">
+        <div className="bg-white dark:bg-gray-900 rounded-b-xl shadow-md p-8 mb-8">
           {/* Overview Tab */}
           {activeTab === "overview" && (
             <div className="space-y-8">
               {/* Statistics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-100 dark:border-blue-800">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-blue-100 rounded-lg">
-                      <FileText className="text-blue-600" size={24} />
+                    <div className="p-3 bg-blue-100 dark:bg-blue-800 rounded-lg">
+                      <FileText
+                        className="text-blue-600 dark:text-blue-400"
+                        size={24}
+                      />
                     </div>
-                    <span className="text-3xl font-bold text-gray-900">
+                    <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                       {stats.totalPosts}
                     </span>
                   </div>
-                  <h3 className="text-gray-700 font-semibold">Total Posts</h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <h3 className="text-gray-700 dark:text-gray-300 font-semibold">
+                    Total Posts
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     {stats.publishedPosts} published, {stats.draftPosts} drafts
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl p-6 border border-red-100">
+                <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-red-100 dark:border-red-800">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-red-100 rounded-lg">
-                      <Heart className="text-red-600" size={24} />
+                    <div className="p-3 bg-red-100 dark:bg-red-800 rounded-lg">
+                      <Heart
+                        className="text-red-600 dark:text-red-400"
+                        size={24}
+                      />
                     </div>
-                    <span className="text-3xl font-bold text-gray-900">
+                    <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                       {stats.totalLikes}
                     </span>
                   </div>
-                  <h3 className="text-gray-700 font-semibold">Total Likes</h3>
-                  <p className="text-sm text-gray-600 mt-1">Across all posts</p>
+                  <h3 className="text-gray-700 dark:text-gray-300 font-semibold">
+                    Total Likes
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Across all posts
+                  </p>
                 </div>
 
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-100 dark:border-green-800">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-green-100 rounded-lg">
-                      <MessageCircle className="text-green-600" size={24} />
+                    <div className="p-3 bg-green-100 dark:bg-green-800 rounded-lg">
+                      <MessageCircle
+                        className="text-green-600 dark:text-green-400"
+                        size={24}
+                      />
                     </div>
-                    <span className="text-3xl font-bold text-gray-900">
+                    <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                       {stats.totalComments}
                     </span>
                   </div>
-                  <h3 className="text-gray-700 font-semibold">Comments</h3>
-                  <p className="text-sm text-gray-600 mt-1">On your posts</p>
+                  <h3 className="text-gray-700 dark:text-gray-300 font-semibold">
+                    Comments
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    On your posts
+                  </p>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-6 border border-purple-100">
+                <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl p-6 border border-purple-100 dark:border-purple-800">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-purple-100 rounded-lg">
-                      <Award className="text-purple-600" size={24} />
+                    <div className="p-3 bg-purple-100 dark:bg-purple-800 rounded-lg">
+                      <Award
+                        className="text-purple-600 dark:text-purple-400"
+                        size={24}
+                      />
                     </div>
-                    <span className="text-3xl font-bold text-gray-900">
+                    <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                       {stats.userComments}
                     </span>
                   </div>
-                  <h3 className="text-gray-700 font-semibold">Your Comments</h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <h3 className="text-gray-700 dark:text-gray-300 font-semibold">
+                    Your Comments
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     Total contributions
                   </p>
                 </div>
@@ -405,8 +429,10 @@ export default function UserProfilePage() {
 
               {/* About Section */}
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">About</h2>
-                <div className="bg-gray-50 rounded-lg p-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                  About
+                </h2>
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="flex items-start gap-3">
                       <Mail className="text-gray-400 mt-1" size={20} />
@@ -414,7 +440,9 @@ export default function UserProfilePage() {
                         <p className="text-sm text-gray-600 font-medium">
                           Email
                         </p>
-                        <p className="text-gray-900">{user.email}</p>
+                        <p className="text-gray-900 dark:text-gray-100">
+                          {user.email}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
@@ -434,7 +462,7 @@ export default function UserProfilePage() {
                         <p className="text-sm text-gray-600 font-medium">
                           Member Since
                         </p>
-                        <p className="text-gray-900">
+                        <p className="text-gray-900 dark:text-gray-100">
                           {new Date(
                             user.createdAt || user.created_at
                           ).toLocaleDateString("en-US", {
@@ -451,7 +479,9 @@ export default function UserProfilePage() {
                       <p className="text-sm text-gray-600 font-medium mb-2">
                         Bio
                       </p>
-                      <p className="text-gray-900">{user.bio}</p>
+                      <p className="text-gray-900 dark:text-gray-100">
+                        {user.bio}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -505,7 +535,7 @@ export default function UserProfilePage() {
                               <MessageCircle size={14} />
                               {parseInt(post.totalComments, 10) || 0}
                             </span>
-                            <span className="text-gray-500">
+                            <span className="text-gray-500 dark:text-gray-400">
                               {new Date(post.createdAt).toLocaleDateString()}
                             </span>
                           </div>
@@ -568,9 +598,9 @@ export default function UserProfilePage() {
                   {posts.map((post) => (
                     <div
                       key={post.id}
-                      className="bg-gray-50 rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
+                      className="bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-700"
                     >
-                      <div className="aspect-video overflow-hidden bg-gray-200">
+                      <div className="aspect-video overflow-hidden bg-gray-200 dark:bg-gray-700">
                         {post.banner ? (
                           <img
                             src={post.banner}
@@ -661,7 +691,7 @@ export default function UserProfilePage() {
                   {comments.map((comment) => (
                     <div
                       key={comment.id}
-                      className="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow"
+                      className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700"
                     >
                       <div className="flex gap-4">
                         <div className="flex-1">
@@ -694,8 +724,10 @@ export default function UserProfilePage() {
                           )}
 
                           {/* Comment Body */}
-                          <div className="bg-white rounded-lg p-4 border border-gray-200">
-                            <p className="text-gray-800">{comment.body}</p>
+                          <div className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                            <p className="text-gray-800 dark:text-gray-200">
+                              {comment.body}
+                            </p>
                           </div>
 
                           {/* Comment Meta */}
@@ -745,7 +777,7 @@ export default function UserProfilePage() {
                       value={avatar}
                       onChange={(e) => setAvatar(e.target.value)}
                       disabled={!isEditing}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                       placeholder="Enter avatar image URL"
                     />
                     {avatar && (
@@ -778,7 +810,7 @@ export default function UserProfilePage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={!isEditing}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -793,7 +825,7 @@ export default function UserProfilePage() {
                       onChange={(e) => setBio(e.target.value)}
                       disabled={!isEditing}
                       rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed resize-none"
                       placeholder="Tell us about yourself..."
                     />
                   </div>
@@ -843,7 +875,7 @@ export default function UserProfilePage() {
                 ) : (
                   <div className="space-y-4 max-w-md">
                     {passwordError && (
-                      <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded">
+                      <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 p-3 rounded">
                         {passwordError}
                       </div>
                     )}
@@ -856,7 +888,7 @@ export default function UserProfilePage() {
                         type="password"
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
 
@@ -868,7 +900,7 @@ export default function UserProfilePage() {
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
 
@@ -880,7 +912,7 @@ export default function UserProfilePage() {
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
 
