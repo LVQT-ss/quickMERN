@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { api } from "../../utils/api";
 import { useAuth } from "../../utils/auth.jsx";
 import { useNavigate, useParams } from "react-router-dom";
+import { createPostUrl } from "../../utils/helpers";
 
 export default function PostEditPage() {
   const { id } = useParams();
@@ -68,7 +69,9 @@ export default function PostEditPage() {
         return;
       }
       await api.posts.update(id, { title, introduction, status }, token);
-      navigate(`/posts/${id}`);
+      // Fetch full post data to get category for URL
+      const fullPost = await api.posts.get(id, token);
+      navigate(createPostUrl(fullPost));
     } catch (err) {
       setError(err.message);
     } finally {

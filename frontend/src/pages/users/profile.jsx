@@ -19,6 +19,7 @@ import {
   Award,
 } from "lucide-react";
 import FadeUp from "../../components/FadeUp";
+import { createPostUrl } from "../../utils/helpers";
 
 export default function UserProfilePage() {
   const { id } = useParams();
@@ -518,7 +519,7 @@ export default function UserProfilePage() {
                         </div>
                         <div className="flex-1">
                           <Link
-                            to={`/posts/${post.id}`}
+                            to={createPostUrl(post)}
                             className="font-semibold text-gray-900 hover:text-blue-600 line-clamp-1"
                           >
                             {post.title}
@@ -636,7 +637,7 @@ export default function UserProfilePage() {
                           )}
                         </div>
                         <Link
-                          to={`/posts/${post.id}`}
+                          to={createPostUrl(post)}
                           className="font-bold text-lg text-gray-900 hover:text-blue-600 line-clamp-2 mb-2"
                         >
                           {post.title}
@@ -706,7 +707,7 @@ export default function UserProfilePage() {
                           {comment.Post && (
                             <div className="mb-3">
                               <Link
-                                to={`/posts/${comment.Post.id}`}
+                                to={createPostUrl(comment.Post)}
                                 className="flex items-start gap-3 group"
                               >
                                 {comment.Post.banner && (
@@ -779,7 +780,7 @@ export default function UserProfilePage() {
                       <User size={16} className="inline mr-2" />
                       Avatar URL
                     </label>
-                    <input
+      <input
                       type="text"
                       value={avatar}
                       onChange={(e) => setAvatar(e.target.value)}
@@ -812,10 +813,10 @@ export default function UserProfilePage() {
                       <Mail size={16} className="inline mr-2" />
                       Email Address
                     </label>
-                    <input
+      <input
                       type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
                       disabled={!isEditing}
                       className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                       placeholder="Enter your email"
@@ -827,9 +828,9 @@ export default function UserProfilePage() {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Bio
                     </label>
-                    <textarea
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
+      <textarea
+        value={bio}
+        onChange={(e) => setBio(e.target.value)}
                       disabled={!isEditing}
                       rows={4}
                       className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed resize-none"
@@ -930,7 +931,7 @@ export default function UserProfilePage() {
                       >
                         Update Password
                       </button>
-                      <button
+      <button
                         onClick={() => {
                           setShowPasswordChange(false);
                           setCurrentPassword("");
@@ -941,7 +942,7 @@ export default function UserProfilePage() {
                         className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
                       >
                         Cancel
-                      </button>
+      </button>
                     </div>
                   </div>
                 )}

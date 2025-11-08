@@ -97,6 +97,16 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      // Route động cho category/post - ĐẶT CUỐI CÙNG
+      {
+        path: "/:category/:idSlug/edit",
+        element: (
+          <ProtectedRoute>
+            <PostEditPage />
+          </ProtectedRoute>
+        ),
+      },
+      { path: "/:category/:idSlug", element: <PostDetailPage /> },
     ],
   },
 ]);

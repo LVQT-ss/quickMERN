@@ -4,11 +4,19 @@ import { api } from "../../utils/api";
 import { useAuth } from "../../utils/auth.jsx";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import FadeUp from "../../components/FadeUp";
+import { extractIdFromUrl } from "../../utils/helpers";
 
 export default function PostDetailPage() {
-  const { id } = useParams();
+  const { id, idSlug } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Extract ID from either /posts/:id or /:category/:idSlug format
+  const postId = idSlug
+    ? extractIdFromUrl(idSlug)
+    : id
+    ? parseInt(id, 10)
+    : null;
   const [post, setPost] = useState(null);
   const [count, setCount] = useState(0);
   const [liked, setLiked] = useState(false);
@@ -26,13 +34,19 @@ export default function PostDetailPage() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
+    if (!postId) {
+      setError("Invalid post ID");
+      setLoading(false);
+      return;
+    }
+
     let active = true;
     setLoading(true);
     Promise.all([
-      api.posts.get(id),
-      api.likes.count(id),
-      api.comments.listByPost(id),
-      user ? api.likes.list(id) : Promise.resolve([]),
+      api.posts.get(postId),
+      api.likes.count(postId),
+      api.comments.listByPost(postId),
+      user ? api.likes.list(postId) : Promise.resolve([]),
     ])
       .then(([p, c, commentsData, likesData]) => {
         if (!active) return;
@@ -49,7 +63,7 @@ export default function PostDetailPage() {
         setError("");
 
         // Track post view (don't await, fire and forget)
-        api.analytics.incrementPostView(id).catch(() => {
+        api.analytics.incrementPostView(postId).catch(() => {
           // Silently fail if tracking fails
         });
       })
@@ -58,7 +72,7 @@ export default function PostDetailPage() {
     return () => {
       active = false;
     };
-  }, [id, user]);
+  }, [postId, user]);
 
   // Scroll progress tracking
   useEffect(() => {
@@ -98,8 +112,8 @@ export default function PostDetailPage() {
     }
     try {
       const token = localStorage.getItem("token");
-      await api.likes.toggle(Number(id), token);
-      const c = await api.likes.count(id);
+      await api.likes.toggle(Number(postId), token);
+      const c = await api.likes.count(postId);
       setCount(c.count || 0);
       setLiked(!liked);
     } catch (err) {

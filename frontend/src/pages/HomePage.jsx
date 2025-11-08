@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { api } from "../utils/api.js";
 import { TrendingUp, Heart, MessageCircle, Eye } from "lucide-react";
 import FadeUp from "../components/FadeUp";
+import { createPostUrl } from "../utils/helpers";
 export default function HomePage() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -163,7 +164,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <Link
-                    to={`/posts/${featuredPost.id}`}
+                    to={createPostUrl(featuredPost)}
                     className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors inline-block"
                   >
                     Read More
@@ -287,7 +288,7 @@ export default function HomePage() {
                           </span>
                         )}
                         <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                          <Link to={`/posts/${post.id}`}>{post.title}</Link>
+                          <Link to={createPostUrl(post)}>{post.title}</Link>
                         </h4>
                         <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
                           <span>
@@ -331,7 +332,7 @@ export default function HomePage() {
                           </div>
                         </div>
                         <Link
-                          to={`/posts/${post.id}`}
+                          to={createPostUrl(post)}
                           className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors inline-flex items-center"
                         >
                           Read More
@@ -434,7 +435,7 @@ export default function HomePage() {
                     {trendingPosts.map((post) => (
                       <Link
                         key={post.id}
-                        to={`/posts/${post.id}`}
+                        to={createPostUrl(post)}
                         className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors group"
                       >
                         <span className="flex items-center gap-2 flex-1 min-w-0">
@@ -467,7 +468,7 @@ export default function HomePage() {
                     {recentPosts.map((post) => (
                       <li key={post.id}>
                         <Link
-                          to={`/posts/${post.id}`}
+                          to={createPostUrl(post)}
                           className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         >
                           <div className="font-medium">{post.title}</div>

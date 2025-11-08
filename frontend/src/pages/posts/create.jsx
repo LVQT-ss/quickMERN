@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "../../utils/api";
 import { useAuth } from "../../utils/auth.jsx";
 import { useNavigate, Link } from "react-router-dom";
+import { createPostUrl } from "../../utils/helpers";
 
 export default function PostCreatePage() {
   const [title, setTitle] = useState("");
@@ -68,7 +69,9 @@ export default function PostCreatePage() {
           }
         }
       }
-      navigate(`/posts/${post.id}`);
+      // Fetch full post data to get category for URL
+      const fullPost = await api.posts.get(post.id, token);
+      navigate(createPostUrl(fullPost));
     } catch (err) {
       setError(err.message);
     } finally {

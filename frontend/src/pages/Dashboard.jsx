@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
 import { useAuth } from "../utils/auth";
+import { createPostUrl } from "../utils/helpers";
 import {
   LayoutDashboard,
   FileText,
@@ -315,7 +316,7 @@ export default function Dashboard() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <Link
-                          to={`/posts/${post.id}`}
+                          to={createPostUrl(post)}
                           className="font-semibold text-gray-900 hover:text-blue-600 line-clamp-2"
                         >
                           {post.title}
@@ -361,7 +362,7 @@ export default function Dashboard() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <Link
-                          to={`/posts/${post.id}`}
+                          to={createPostUrl(post)}
                           className="font-semibold text-gray-900 hover:text-blue-600 line-clamp-2"
                         >
                           {post.title}
@@ -478,7 +479,7 @@ export default function Dashboard() {
                             </div>
                             <div>
                               <Link
-                                to={`/posts/${post.id}`}
+                                to={createPostUrl(post)}
                                 className="font-semibold text-gray-900 hover:text-blue-600 line-clamp-1"
                               >
                                 {post.title}
@@ -648,7 +649,7 @@ export default function Dashboard() {
                         <p className="text-gray-700 mb-2">{comment.body}</p>
                         <div className="flex items-center gap-3">
                           <Link
-                            to={`/posts/${comment.post_id || comment.postId}`}
+                            to={comment.Post ? createPostUrl(comment.Post) : `/posts/${comment.post_id || comment.postId}`}
                             className="text-xs text-blue-600 hover:text-blue-700 font-medium"
                           >
                             View Post
@@ -750,7 +751,7 @@ export default function Dashboard() {
                           #{index + 1}
                         </span>
                         <Link
-                          to={`/posts/${post.id}`}
+                          to={createPostUrl(post)}
                           className="flex-1 min-w-0"
                         >
                           <h3 className="font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 truncate">

@@ -4,6 +4,7 @@ import { api } from "../../utils/api";
 import { useAuth } from "../../utils/auth.jsx";
 import { Heart, MessageCircle } from "lucide-react";
 import FadeUp from "../../components/FadeUp";
+import { createPostUrl } from "../../utils/helpers";
 
 export default function PostsListPage() {
   const { user } = useAuth();
@@ -322,7 +323,7 @@ export default function PostsListPage() {
                 {/* Post Image */}
                 {post.banner ? (
                   <Link
-                    to={`/posts/${post.id}`}
+                    to={createPostUrl(post)}
                     className="block aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800"
                   >
                     <img
@@ -334,7 +335,7 @@ export default function PostsListPage() {
                 ) : post.PostImages?.[0]?.imageUrl ||
                   post.postImages?.[0]?.imageUrl ? (
                   <Link
-                    to={`/posts/${post.id}`}
+                    to={createPostUrl(post)}
                     className="block aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800"
                   >
                     <img
@@ -348,7 +349,7 @@ export default function PostsListPage() {
                   </Link>
                 ) : (
                   <Link
-                    to={`/posts/${post.id}`}
+                    to={createPostUrl(post)}
                     className="flex aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 items-center justify-center"
                   >
                     <svg
@@ -420,7 +421,7 @@ export default function PostsListPage() {
 
                   {/* Title */}
                   <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    <Link to={`/posts/${post.id}`} className="break-words">
+                    <Link to={createPostUrl(post)} className="break-words">
                       {post.title}
                     </Link>
                   </h3>
@@ -466,7 +467,7 @@ export default function PostsListPage() {
                       </span>
                     </button>
                     <Link
-                      to={`/posts/${post.id}#comments`}
+                      to={`${createPostUrl(post)}#comments`}
                       className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       <MessageCircle size={18} />
@@ -489,7 +490,7 @@ export default function PostsListPage() {
                       </span>
                     </div>
                     <Link
-                      to={`/posts/${post.id}`}
+                      to={createPostUrl(post)}
                       className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold text-sm inline-flex items-center"
                     >
                       Read More
