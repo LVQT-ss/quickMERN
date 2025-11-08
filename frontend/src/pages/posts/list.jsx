@@ -314,188 +314,46 @@ export default function PostsListPage() {
         {/* Posts Grid */}
         {!loading && filteredPosts.length > 0 && (
           <FadeUp>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post, index) => (
-              <article
-                key={post.id}
-                className="bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-800"
-              >
-                {/* Post Image */}
-                {post.banner ? (
-                  <Link
-                    to={createPostUrl(post)}
-                    className="block aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800"
-                  >
-                    <img
-                      src={post.banner}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </Link>
-                ) : post.PostImages?.[0]?.imageUrl ||
-                  post.postImages?.[0]?.imageUrl ? (
-                  <Link
-                    to={createPostUrl(post)}
-                    className="block aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800"
-                  >
-                    <img
-                      src={
-                        post.PostImages?.[0]?.imageUrl ||
-                        post.postImages?.[0]?.imageUrl
-                      }
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </Link>
-                ) : (
-                  <Link
-                    to={createPostUrl(post)}
-                    className="flex aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 items-center justify-center"
-                  >
-                    <svg
-                      className="w-20 h-20 text-white opacity-30"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </Link>
-                )}
-
-                {/* Post Content */}
-                <div className="p-6">
-                  {/* Meta Info */}
-                  <div className="flex items-center gap-2 mb-4 flex-wrap">
-                    <time className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                      {new Date(post.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </time>
-
-                    {post.status === "published" ? (
-                      <span className="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full font-semibold">
-                        Published
-                      </span>
-                    ) : (
-                      <span className="text-xs px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full font-semibold">
-                        Draft
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Categories */}
-                  {(post.Categories || post.categories)?.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {(post.Categories || post.categories).map((cat) => (
-                        <Link
-                          key={cat.id}
-                          to={`/posts?category=${cat.id}`}
-                          className="text-xs px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors font-medium"
-                        >
-                          {cat.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    <Link to={createPostUrl(post)} className="break-words">
-                      {post.title}
-                    </Link>
-                  </h3>
-
-                  {/* Introduction */}
-                  {post.introduction && (
-                    <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4 leading-relaxed">
-                      {post.introduction}
-                    </p>
-                  )}
-
-                  {/* Like and Comment Stats */}
-                  <div className="flex items-center gap-4 mb-4">
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleLikeToggle(post.id);
-                      }}
-                      disabled={likingPosts.has(post.id)}
-                      className={`flex items-center gap-1.5 text-sm transition-colors ${
-                        userLikes.has(post.id)
-                          ? "text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400"
-                          : "text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500"
-                      } ${
-                        likingPosts.has(post.id)
-                          ? "opacity-50 cursor-not-allowed"
-                          : ""
-                      }`}
-                      title={
-                        user
-                          ? userLikes.has(post.id)
-                            ? "Unlike"
-                            : "Like"
-                          : "Login to like"
-                      }
-                    >
-                      <Heart
-                        size={18}
-                        className={userLikes.has(post.id) ? "fill-current" : ""}
-                      />
-                      <span className="font-medium">
-                        {post.totalLikes || 0}
-                      </span>
-                    </button>
-                    <Link
-                      to={`${createPostUrl(post)}#comments`}
-                      className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                    >
-                      <MessageCircle size={18} />
-                      <span className="font-medium">
-                        {post.totalComments || 0}
-                      </span>
-                    </Link>
-                  </div>
-
-                  {/* Author & Read More */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center text-white font-bold text-sm">
-                        {(post.User?.username ||
-                          post.User?.name ||
-                          "A")[0].toUpperCase()}
-                      </div>
-                      <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                        {post.User?.username || post.User?.name || "Anonymous"}
-                      </span>
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredPosts.map((post, index) => (
+                <article
+                  key={post.id}
+                  className="bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-800 flex flex-col h-full"
+                >
+                  {/* Post Image - KHÔNG THAY ĐỔI */}
+                  {post.banner ? (
                     <Link
                       to={createPostUrl(post)}
-                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold text-sm inline-flex items-center"
+                      className="block aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800 flex-shrink-0"
                     >
-                      Read More
+                      <img
+                        src={post.banner}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </Link>
+                  ) : post.PostImages?.[0]?.imageUrl ||
+                    post.postImages?.[0]?.imageUrl ? (
+                    <Link
+                      to={createPostUrl(post)}
+                      className="block aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800 flex-shrink-0"
+                    >
+                      <img
+                        src={
+                          post.PostImages?.[0]?.imageUrl ||
+                          post.postImages?.[0]?.imageUrl
+                        }
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </Link>
+                  ) : (
+                    <Link
+                      to={createPostUrl(post)}
+                      className="flex aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 items-center justify-center flex-shrink-0"
+                    >
                       <svg
-                        className="w-4 h-4 ml-1"
+                        className="w-20 h-20 text-white opacity-30"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -503,16 +361,163 @@ export default function PostsListPage() {
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
+                          strokeWidth={1.5}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
                     </Link>
+                  )}
+
+                  {/* Post Content - THÊM flex-1 và flex flex-col */}
+                  <div className="p-6 flex flex-col flex-1">
+                    {/* Meta Info - KHÔNG THAY ĐỔI */}
+                    <div className="flex items-center gap-2 mb-4 flex-wrap">
+                      <time className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                        <svg
+                          className="w-4 h-4 mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        {new Date(post.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </time>
+
+                      {post.status === "published" ? (
+                        <span className="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full font-semibold">
+                          Published
+                        </span>
+                      ) : (
+                        <span className="text-xs px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full font-semibold">
+                          Draft
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Categories - KHÔNG THAY ĐỔI */}
+                    {(post.Categories || post.categories)?.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {(post.Categories || post.categories).map((cat) => (
+                          <Link
+                            key={cat.id}
+                            to={`/posts?category=${cat.id}`}
+                            className="text-xs px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors font-medium"
+                          >
+                            {cat.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Title - THÊM word-break và line-clamp-2 */}
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors break-words">
+                      <Link to={createPostUrl(post)}>{post.title}</Link>
+                    </h3>
+
+                    {/* Introduction - GIỮ line-clamp-3 */}
+                    {post.introduction && (
+                      <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4 leading-relaxed">
+                        {post.introduction}
+                      </p>
+                    )}
+
+                    {/* Spacer - ĐẨY PHẦN DƯỚI XUỐNG ĐÁY */}
+                    <div className="flex-1"></div>
+
+                    {/* Like and Comment Stats - KHÔNG THAY ĐỔI */}
+                    <div className="flex items-center gap-4 mb-4">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleLikeToggle(post.id);
+                        }}
+                        disabled={likingPosts.has(post.id)}
+                        className={`flex items-center gap-1.5 text-sm transition-colors ${
+                          userLikes.has(post.id)
+                            ? "text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400"
+                            : "text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500"
+                        } ${
+                          likingPosts.has(post.id)
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }`}
+                        title={
+                          user
+                            ? userLikes.has(post.id)
+                              ? "Unlike"
+                              : "Like"
+                            : "Login to like"
+                        }
+                      >
+                        <Heart
+                          size={18}
+                          className={
+                            userLikes.has(post.id) ? "fill-current" : ""
+                          }
+                        />
+                        <span className="font-medium">
+                          {post.totalLikes || 0}
+                        </span>
+                      </button>
+                      <Link
+                        to={`${createPostUrl(post)}#comments`}
+                        className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
+                        <MessageCircle size={18} />
+                        <span className="font-medium">
+                          {post.totalComments || 0}
+                        </span>
+                      </Link>
+                    </div>
+
+                    {/* Author & Read More - LÚC NÀO CŨNG Ở DƯỚI CÙNG */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+                      <div className="flex items-center space-x-2 min-w-0 flex-1 mr-2">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                          {(post.User?.username ||
+                            post.User?.name ||
+                            "A")[0].toUpperCase()}
+                        </div>
+                        <span className="text-sm text-gray-700 dark:text-gray-300 font-medium truncate">
+                          {post.User?.username ||
+                            post.User?.name ||
+                            "Anonymous"}
+                        </span>
+                      </div>
+                      <Link
+                        to={createPostUrl(post)}
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold text-sm inline-flex items-center flex-shrink-0"
+                      >
+                        Read More
+                        <svg
+                          className="w-4 h-4 ml-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
           </FadeUp>
         )}
 

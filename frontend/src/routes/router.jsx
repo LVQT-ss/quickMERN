@@ -42,43 +42,43 @@ const router = createBrowserRouter([
       {
         path: "/posts/new",
         element: (
-          <ProtectedRoute>
+          <AdminRoute>
             <PostCreatePage />
-          </ProtectedRoute>
+          </AdminRoute>
         ),
       },
       { path: "/posts/:id", element: <PostDetailPage /> },
       {
         path: "/posts/:id/edit",
         element: (
-          <ProtectedRoute>
+          <AdminRoute>
             <PostEditPage />
-          </ProtectedRoute>
+          </AdminRoute>
         ),
       },
       { path: "/categories", element: <CategoriesListPage /> },
       {
         path: "/categories/new",
         element: (
-          <ProtectedRoute>
+          <AdminRoute>
             <CategoryCreatePage />
-          </ProtectedRoute>
+          </AdminRoute>
         ),
       },
       {
         path: "/categories/:id/edit",
         element: (
-          <ProtectedRoute>
+          <AdminRoute>
             <CategoryEditPage />
-          </ProtectedRoute>
+          </AdminRoute>
         ),
       },
       {
         path: "/users",
         element: (
-          <ProtectedRoute>
+          <AdminRoute>
             <UsersListPage />
-          </ProtectedRoute>
+          </AdminRoute>
         ),
       },
       {
@@ -101,9 +101,9 @@ const router = createBrowserRouter([
       {
         path: "/:category/:idSlug/edit",
         element: (
-          <ProtectedRoute>
+          <AdminRoute>
             <PostEditPage />
-          </ProtectedRoute>
+          </AdminRoute>
         ),
       },
       { path: "/:category/:idSlug", element: <PostDetailPage /> },

@@ -233,7 +233,7 @@ export default function About() {
 
         {/* Better Than AI */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl font-bold mb-6">
             Why Human-Created Content Matters
           </h2>
           <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-r-lg">
@@ -326,9 +326,7 @@ export default function About() {
 
         {/* Topics Covered */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
-            What You'll Find Here
-          </h2>
+          <h2 className="text-3xl font-bold mb-6">What You'll Find Here</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
@@ -358,7 +356,7 @@ export default function About() {
               </p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              <h3 className="text-xl font-semibold  mb-3">
                 Tech Tips & Tricks
               </h3>
               <p className="text-gray-700 dark:text-gray-300">
@@ -371,17 +369,13 @@ export default function About() {
 
         {/* Contact Section */}
         <section className="mb-16" id="contact">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
-            Get In Touch
-          </h2>
+          <h2 className="text-3xl font-bold  mb-6">Get In Touch</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Contact Info */}
             <div className="space-y-6">
               <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                  Let's Connect
-                </h3>
-                <p className="text-gray-700 mb-6">
+                <h3 className="text-xl font-semibold  mb-4">Let's Connect</h3>
+                <p className=" mb-6">
                   Have a question about a tutorial? Want to suggest a topic? Or
                   just want to say hi? I'd love to hear from you!
                 </p>
@@ -405,9 +399,9 @@ export default function About() {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">Email</p>
+                    <p className="text-sm font-medium ">Email</p>
                     <p className="text-gray-700 dark:text-gray-300">
-                      your.email@example.com
+                      codewithquocthinh@gmail.com
                     </p>
                   </div>
                 </div>
@@ -423,7 +417,7 @@ export default function About() {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">YouTube</p>
+                    <p className="text-sm font-medium ">YouTube</p>
                     <a
                       href="https://youtube.com/yourchannel"
                       target="_blank"
@@ -446,7 +440,7 @@ export default function About() {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">GitHub</p>
+                    <p className="text-sm font-medium ">GitHub</p>
                     <a
                       href="https://github.com/yourusername"
                       target="_blank"
@@ -469,7 +463,7 @@ export default function About() {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">Twitter</p>
+                    <p className="text-sm font-medium ">Twitter</p>
                     <a
                       href="https://twitter.com/yourusername"
                       target="_blank"
@@ -484,12 +478,13 @@ export default function About() {
             </div>
 
             {/* Contact Form */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            {/* Contact Form */}
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1"
                   >
                     Name
                   </label>
@@ -500,7 +495,7 @@ export default function About() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"
                     placeholder="Your name"
                   />
                 </div>
@@ -508,7 +503,7 @@ export default function About() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1"
                   >
                     Email
                   </label>
@@ -519,7 +514,7 @@ export default function About() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -527,7 +522,7 @@ export default function About() {
                 <div>
                   <label
                     htmlFor="subject"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1"
                   >
                     Subject
                   </label>
@@ -538,7 +533,7 @@ export default function About() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"
                     placeholder="What's this about?"
                   />
                 </div>
@@ -546,7 +541,7 @@ export default function About() {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1"
                   >
                     Message
                   </label>
@@ -557,26 +552,26 @@ export default function About() {
                     onChange={handleChange}
                     required
                     rows="5"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none bg-white dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400"
                     placeholder="Your message here..."
                   />
                 </div>
 
                 {submitStatus === "success" && (
-                  <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
+                  <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 text-green-800 dark:text-green-300 px-4 py-3 rounded-md">
                     Message sent successfully! I'll get back to you soon.
                   </div>
                 )}
 
                 {submitStatus === "error" && (
-                  <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+                  <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-800 dark:text-red-300 px-4 py-3 rounded-md">
                     Oops! Something went wrong. Please try again.
                   </div>
                 )}
 
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="w-full bg-blue-600 dark:bg-blue-500 text-white font-semibold py-3 px-6 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:ring-offset-slate-800"
                 >
                   Send Message
                 </button>

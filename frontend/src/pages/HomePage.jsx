@@ -256,18 +256,19 @@ export default function HomePage() {
                   {filteredPosts.map((post) => (
                     <article
                       key={post.id}
-                      className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                      className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
                     >
+                      {/* Post Image */}
                       {post.banner ? (
                         <img
                           src={post.banner}
                           alt={post.title}
-                          className="w-full h-48 object-cover"
+                          className="w-full h-48 object-cover flex-shrink-0"
                         />
                       ) : (
-                        <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                        <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center flex-shrink-0">
                           <svg
-                            className="w-12 h-12 text-gray-400"
+                            className="w-12 h-12 text-gray-400 dark:text-gray-600"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -281,23 +282,30 @@ export default function HomePage() {
                           </svg>
                         </div>
                       )}
-                      <div className="p-6">
+
+                      {/* Post Content */}
+                      <div className="p-6 flex flex-col flex-1">
+                        {/* Category Badge */}
                         {post.Categories && post.Categories.length > 0 && (
-                          <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded mb-3">
+                          <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded mb-3 w-fit">
                             {post.Categories[0].name}
                           </span>
                         )}
-                        <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+
+                        {/* Title - Line clamp 2 + break-words */}
+                        <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2 break-words">
                           <Link to={createPostUrl(post)}>{post.title}</Link>
                         </h4>
+
+                        {/* Author & Date */}
                         <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-                          <span>
+                          <span className="truncate">
                             {post.User?.username ||
                               post.User?.name ||
                               "Anonymous"}
                           </span>
-                          <span className="mx-2">•</span>
-                          <span>
+                          <span className="mx-2 flex-shrink-0">•</span>
+                          <span className="flex-shrink-0">
                             {new Date(post.createdAt).toLocaleDateString(
                               "en-US",
                               {
@@ -308,9 +316,16 @@ export default function HomePage() {
                             )}
                           </span>
                         </div>
-                        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+
+                        {/* Introduction - Line clamp 3 */}
+                        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 leading-relaxed">
                           {post.introduction}
                         </p>
+
+                        {/* Spacer - Push stats & read more to bottom */}
+                        <div className="flex-1"></div>
+
+                        {/* Stats */}
                         <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
                           <div className="flex items-center gap-1">
                             <Eye
@@ -331,13 +346,15 @@ export default function HomePage() {
                             <span>{post.totalComments || 0}</span>
                           </div>
                         </div>
+
+                        {/* Read More Link */}
                         <Link
                           to={createPostUrl(post)}
-                          className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors inline-flex items-center"
+                          className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors inline-flex items-center group"
                         >
                           Read More
                           <svg
-                            className="w-4 h-4 ml-1"
+                            className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"

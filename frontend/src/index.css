@@ -14,16 +14,16 @@
   body {
     @apply bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors;
   }
-  
+
   /* Scrollbar styles for dark mode */
   ::-webkit-scrollbar {
     @apply w-2 h-2;
   }
-  
+
   ::-webkit-scrollbar-track {
     @apply bg-gray-100 dark:bg-gray-900;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     @apply bg-gray-300 dark:bg-gray-700 rounded-full hover:bg-gray-400 dark:hover:bg-gray-600;
   }
@@ -41,4 +41,55 @@
 
 .animate-fadeIn {
   animation: fadeIn 0.2s ease-in-out;
+}
+/* Logo floating animation */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes look-around {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+.logo-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.eye-blink {
+  animation: blink 4s ease-in-out infinite;
+}
+
+.eye-look {
+  animation: look-around 5s ease-in-out infinite;
+}
+
+/* Gradient animation for logo */
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.logo-gradient-animate {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
 }
