@@ -11,6 +11,10 @@ const Post = sequelize.define('Post', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    youtubeVideoUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     introduction: {
         type: DataTypes.TEXT,
         allowNull: true,

@@ -39,6 +39,7 @@ const router = express.Router();
  *               introduction: { type: string }
  *               banner: { type: string }
  *               status: { type: string, enum: [draft, published] }
+ *               youtubeVideoUrl: { type: string }
  *               category_ids:
  *                 type: array
  *                 items: { type: integer }
@@ -117,6 +118,7 @@ router.get('/posts/:id', getPostById);
  *               title: { type: string }
  *               introduction: { type: string }
  *               banner: { type: string }
+ *               youtubeVideoUrl: { type: string }
  *               status: { type: string, enum: [draft, published] }
  *               publishedAt: { type: string, format: date-time }
  *     responses:

@@ -2,9 +2,34 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { api } from "../../utils/api";
 import { useAuth } from "../../utils/auth.jsx";
-import { Heart, MessageCircle, Send } from "lucide-react";
+import { Heart, MessageCircle, Send, Youtube } from "lucide-react";
 import FadeUp from "../../components/FadeUp";
 import { extractIdFromUrl } from "../../utils/helpers";
+
+// Helper function to extract YouTube video ID from various URL formats
+const extractYouTubeVideoId = (url) => {
+  if (!url) return null;
+
+  // If it's already just an ID (no URL structure)
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) {
+    return url.trim();
+  }
+
+  // Match various YouTube URL formats
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+
+  return null;
+};
 
 export default function PostDetailPage() {
   const { id, idSlug } = useParams();
@@ -104,6 +129,12 @@ export default function PostDetailPage() {
       [],
     [post]
   );
+
+  // Extract YouTube video ID from post
+  const youtubeVideoId = useMemo(() => {
+    if (!post?.youtubeVideoUrl) return null;
+    return extractYouTubeVideoId(post.youtubeVideoUrl);
+  }, [post]);
 
   const toggle = async () => {
     if (!user) {
@@ -1275,23 +1306,40 @@ export default function PostDetailPage() {
               </div>
             </div>
 
-            {/* Newsletter Signup */}
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-800 rounded-xl shadow-lg p-6 text-white">
-              <h3 className="text-xl font-bold mb-2">
-                📬 Subscribe to Newsletter
-              </h3>
-              <p className="text-blue-100 dark:text-blue-200 text-sm mb-4">
-                Get the latest articles and tutorials delivered to your inbox.
-              </p>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
-              />
-              <button className="w-full bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 font-semibold py-3 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors">
-                Subscribe Now
-              </button>
-            </div>
+            {/* Youtube Video */}
+            {youtubeVideoId && (
+              <div className="bg-gradient-to-br from-red-600 to-red-700 dark:from-red-700 dark:to-red-800 rounded-xl shadow-lg p-6 text-white">
+                <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+                  <Youtube size={24} />
+                  Featured Video
+                </h3>
+                <p className="text-red-100 dark:text-red-200 text-sm mb-4">
+                  Check out our latest video content!
+                </p>
+
+                {/* YouTube Video Embed */}
+                <div className="relative w-full pb-[56.25%] mb-3 rounded-lg overflow-hidden bg-black">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <a
+                  href={`https://www.youtube.com/watch?v=${youtubeVideoId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 font-semibold py-3 rounded-lg hover:bg-red-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Youtube size={20} />
+                  Watch on YouTube
+                </a>
+              </div>
+            )}
           </aside>
         </div>
       </div>

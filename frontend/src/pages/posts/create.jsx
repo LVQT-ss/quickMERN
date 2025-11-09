@@ -8,6 +8,7 @@ export default function PostCreatePage() {
   const [title, setTitle] = useState("");
   const [introduction, setIntroduction] = useState("");
   const [banner, setBanner] = useState("");
+  const [youtubeVideoUrl, setYoutubeVideoUrl] = useState("");
   const [status, setStatus] = useState("draft");
   const [categories, setCategories] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -39,7 +40,7 @@ export default function PostCreatePage() {
         return;
       }
       const post = await api.posts.create(
-        { title, introduction, banner, status, category_ids: selected },
+        { title, introduction, banner, youtubeVideoUrl: youtubeVideoUrl || null, status, category_ids: selected },
         token
       );
       for (const [index, s] of sections.entries()) {
@@ -285,6 +286,21 @@ export default function PostCreatePage() {
                     />
                   </div>
                 )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  YouTube Video URL
+                </label>
+                <input
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID"
+                  value={youtubeVideoUrl}
+                  onChange={(e) => setYoutubeVideoUrl(e.target.value)}
+                />
+                <p className="mt-2 text-sm text-gray-500">
+                  Add a YouTube video URL to embed a featured video in your post
+                </p>
               </div>
 
               <div>
