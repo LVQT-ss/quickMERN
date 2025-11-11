@@ -4,6 +4,31 @@ import { api } from "../utils/api.js";
 import { TrendingUp, Heart, MessageCircle, Eye } from "lucide-react";
 import FadeUp from "../components/FadeUp";
 import { createPostUrl } from "../utils/helpers";
+
+// Helper function to extract YouTube video ID from various URL formats
+const extractYouTubeVideoId = (url) => {
+  if (!url) return null;
+
+  // If it's already just an ID (no URL structure)
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) {
+    return url.trim();
+  }
+
+  // Match various YouTube URL formats
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+
+  return null;
+};
 export default function HomePage() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -81,6 +106,11 @@ export default function HomePage() {
     ).length;
   };
 
+  // Extract YouTube video ID from featured post
+  const featuredYoutubeVideoId = featuredPost 
+    ? extractYouTubeVideoId(featuredPost.youtubeVideoUrl) 
+    : null;
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
@@ -121,8 +151,23 @@ export default function HomePage() {
       {/* Hero Section */}
       {featuredPost && (
         <FadeUp>
-          <section className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <section 
+            className="relative bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-hidden"
+          >
+            {/* Banner as background (if exists and no YouTube video) */}
+            {featuredPost.banner && !featuredYoutubeVideoId && (
+              <div 
+                className="absolute inset-0 opacity-5 dark:opacity-10"
+                style={{
+                  backgroundImage: `url(${featuredPost.banner})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat'
+                }}
+              />
+            )}
+            
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
                   <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
@@ -131,6 +176,18 @@ export default function HomePage() {
                   <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4 break-words line-clamp-2">
                     {featuredPost.title}
                   </h2>
+                  
+                  {/* Banner image displayed here if YouTube video exists */}
+                  {featuredPost.banner && featuredYoutubeVideoId && (
+                    <div className="mb-6 rounded-lg overflow-hidden shadow-md">
+                      <img
+                        src={featuredPost.banner}
+                        alt={featuredPost.title}
+                        className="w-full h-48 object-cover"
+                      />
+                    </div>
+                  )}
+                  
                   <p className="text-gray-600 dark:text-gray-400 text-lg mb-6">
                     {featuredPost.introduction}
                   </p>
@@ -171,7 +228,19 @@ export default function HomePage() {
                   </Link>
                 </div>
                 <div className="order-first md:order-last">
-                  {featuredPost.banner ? (
+                  {featuredYoutubeVideoId ? (
+                    <div className="relative w-full pb-[56.25%] rounded-lg overflow-hidden shadow-lg bg-black">
+                      <iframe
+                        className="absolute top-0 left-0 w-full h-full"
+                        src={`https://www.youtube.com/embed/${featuredYoutubeVideoId}`}
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  ) : featuredPost.banner ? (
                     <img
                       src={featuredPost.banner}
                       alt={featuredPost.title}

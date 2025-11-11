@@ -23,7 +23,7 @@ export default function Header() {
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center group logo-float">
               <div className="text-3xl font-bold bg-gradient-to-r from-yellow-600 via-pink-500 to-indigo-600 bg-clip-text text-transparent group-hover:from-blue-700 group-hover:to-indigo-700 transition-all logo-gradient-animate group-hover:scale-110 transform duration-300">
-                TechBlog
+                TheRawCoder
               </div>
             </Link>
 

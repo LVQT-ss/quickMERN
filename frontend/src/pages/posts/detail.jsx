@@ -422,54 +422,81 @@ export default function PostDetailPage() {
           <article className="lg:col-span-9">
             {/* Article Header */}
             <FadeUp>
-              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden mb-8">
-                {/* Featured Banner */}
-                {post.banner ? (
-                  <div
-                    className="w-full aspect-video overflow-hidden bg-gray-900 relative group cursor-pointer"
-                    onClick={() => openLightbox(post.banner, post.title)}
-                  >
-                    <img
-                      src={post.banner}
-                      alt={post.title}
-                      className="w-full h-full object-contain bg-gray-900"
-                    />
-                    {/* Fullscreen button overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-800/90 rounded-full p-4 shadow-2xl">
-                        <svg
-                          className="w-8 h-8 text-gray-900 dark:text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                          />
-                        </svg>
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden mb-8 relative">
+                {/* Banner as background (if exists and no YouTube video) */}
+                {post.banner && !youtubeVideoId && (
+                  <div 
+                    className="absolute inset-0 opacity-5 dark:opacity-10"
+                    style={{
+                      backgroundImage: `url(${post.banner})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat'
+                    }}
+                  />
+                )}
+                
+                <div className="relative">
+                  {/* Featured Video or Banner */}
+                  {youtubeVideoId ? (
+                    <div className="w-full aspect-video relative rounded-t-xl overflow-hidden bg-black">
+                      <iframe
+                        className="w-full h-full"
+                        src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  ) : post.banner ? (
+                    <div
+                      className="w-full aspect-video overflow-hidden bg-gray-900 relative group cursor-pointer"
+                      onClick={() => openLightbox(post.banner, post.title)}
+                    >
+                      <img
+                        src={post.banner}
+                        alt={post.title}
+                        className="w-full h-full object-contain bg-gray-900"
+                      />
+                      {/* Fullscreen button overlay */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-800/90 rounded-full p-4 shadow-2xl">
+                          <svg
+                            className="w-8 h-8 text-gray-900 dark:text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                            />
+                          </svg>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="w-full aspect-video bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 flex items-center justify-center">
-                    <svg
-                      className="w-32 h-32 text-white opacity-30"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                )}
+                  ) : (
+                    <div className="w-full aspect-video bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 flex items-center justify-center">
+                      <svg
+                        className="w-32 h-32 text-white opacity-30"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </div>
 
                 {/* Article Meta */}
                 <div className="p-8 lg:p-12">
@@ -495,6 +522,40 @@ export default function PostDetailPage() {
                   <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight mb-6 break-words">
                     {post.title}
                   </h1>
+
+                  {/* Banner image displayed here if YouTube video exists */}
+                  {post.banner && youtubeVideoId && (
+                    <div className="mb-6 rounded-lg overflow-hidden shadow-md">
+                      <div
+                        className="w-full h-64 overflow-hidden bg-gray-900 relative group cursor-pointer"
+                        onClick={() => openLightbox(post.banner, post.title)}
+                      >
+                        <img
+                          src={post.banner}
+                          alt={post.title}
+                          className="w-full h-full object-cover"
+                        />
+                        {/* Fullscreen button overlay */}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-800/90 rounded-full p-3 shadow-2xl">
+                            <svg
+                              className="w-6 h-6 text-gray-900 dark:text-white"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Author Info & Meta */}
                   <div className="flex items-center justify-between flex-wrap gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
@@ -1306,29 +1367,16 @@ export default function PostDetailPage() {
               </div>
             </div>
 
-            {/* Youtube Video */}
+            {/* Youtube Video Link (if video is already shown in main content) */}
             {youtubeVideoId && (
               <div className="bg-gradient-to-br from-red-600 to-red-700 dark:from-red-700 dark:to-red-800 rounded-xl shadow-lg p-6 text-white">
                 <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
                   <Youtube size={24} />
-                  Featured Video
+                  Watch on YouTube
                 </h3>
                 <p className="text-red-100 dark:text-red-200 text-sm mb-4">
-                  Check out our latest video content!
+                  Check out the full video on YouTube for more content!
                 </p>
-
-                {/* YouTube Video Embed */}
-                <div className="relative w-full pb-[56.25%] mb-3 rounded-lg overflow-hidden bg-black">
-                  <iframe
-                    className="absolute top-0 left-0 w-full h-full"
-                    src={`https://www.youtube.com/embed/${youtubeVideoId}`}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  ></iframe>
-                </div>
                 <a
                   href={`https://www.youtube.com/watch?v=${youtubeVideoId}`}
                   target="_blank"
@@ -1336,7 +1384,7 @@ export default function PostDetailPage() {
                   className="w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 font-semibold py-3 rounded-lg hover:bg-red-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
                 >
                   <Youtube size={20} />
-                  Watch on YouTube
+                  Open YouTube
                 </a>
               </div>
             )}

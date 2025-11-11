@@ -39,11 +39,11 @@
   }
 }
 
-.animate-fadeIn {
+/* .animate-fadeIn {
   animation: fadeIn 0.2s ease-in-out;
 }
 /* Logo floating animation */
-@keyframes float {
+/* @keyframes float {
   0%,
   100% {
     transform: translateY(0px);
@@ -64,13 +64,12 @@
   75% {
     transform: translateX(2px);
   }
-}
+} */
 
 .logo-float {
   animation: float 3s ease-in-out infinite;
 }
-
-.eye-blink {
+*/ .eye-blink {
   animation: blink 4s ease-in-out infinite;
 }
 
