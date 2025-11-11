@@ -126,9 +126,9 @@ export default function HomePage() {
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
                   <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
-                    Featured Post
+                    Latest Post
                   </span>
-                  <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                  <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4 break-words line-clamp-2">
                     {featuredPost.title}
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400 text-lg mb-6">
