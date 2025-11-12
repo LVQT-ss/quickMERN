@@ -10,7 +10,7 @@ import {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDRO9zjB_VOuOVGS_P9I-QhPc2yV3DPeNM",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "mern-blog-b3bb7.firebaseapp.com",
   projectId: "mern-blog-b3bb7",
   storageBucket: "mern-blog-b3bb7.appspot.com",
