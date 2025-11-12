@@ -151,6 +151,48 @@ export default function Footer() {
                   About
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/policy"
+                  className="text-gray-400 hover:text-white transition-colors inline-flex items-center group"
+                >
+                  <svg
+                    className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/terms"
+                  className="text-gray-400 hover:text-white transition-colors inline-flex items-center group"
+                >
+                  <svg
+                    className="w-4 h-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                  Terms of Service
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -165,24 +207,24 @@ export default function Footer() {
               </p>
             </div>
             <div className="flex items-center space-x-6 text-sm">
-              <a
-                href="#"
+              <Link
+                to="/about"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Contact
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/policy"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Support
-              </a>
-              <a
-                href="#"
+                Privacy Policy
+              </Link>
+              <Link
+                to="/terms"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                Sitemap
-              </a>
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>

@@ -18,7 +18,8 @@ import HomePage from "../pages/HomePage";
 import About from "../pages/about";
 import Dashboard from "../pages/Dashboard";
 import ServicesPage from "../pages/Services";
-
+import PolicyPage from "../pages/PolicyPage";
+import TermsPage from "../pages/TermsPage";
 const router = createBrowserRouter([
   {
     element: (
@@ -40,6 +41,8 @@ const router = createBrowserRouter([
       { path: "/register", element: <RegisterPage /> },
       { path: "/about", element: <About /> },
       { path: "/services", element: <ServicesPage /> },
+      { path: "/policy", element: <PolicyPage /> },
+      { path: "/terms", element: <TermsPage /> },
       { path: "/posts", element: <PostsListPage /> },
       {
         path: "/posts/new",

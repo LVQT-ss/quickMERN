@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login } from '../controllers/auth.controller.js';
+import { register, login, googleLogin } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
@@ -58,5 +58,30 @@ router.post('/register', register);
  *         description: Invalid credentials
  */
 router.post('/login', login);
+
+/**
+ * @swagger
+ * /api/auth/google:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Google OAuth login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [credential]
+ *             properties:
+ *               credential:
+ *                 type: string
+ *                 description: Google ID token
+ *     responses:
+ *       200:
+ *         description: Google login successful
+ *       500:
+ *         description: Google authentication failed
+ */
+router.post('/google', googleLogin);
 
 export default router;

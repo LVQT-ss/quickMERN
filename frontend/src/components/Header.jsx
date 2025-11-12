@@ -3,16 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/auth.jsx";
 import { useTheme } from "../utils/ThemeContext.jsx";
 import { Moon, Sun } from "lucide-react";
+import LoginModal from "./LoginModal.jsx";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -78,10 +80,10 @@ export default function Header() {
             </Link>
 
             <Link
-              to="/about"
+              to="/services"
               className="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
             >
-              About
+              Services
             </Link>
 
             {/* Theme Toggle */}
@@ -225,18 +227,18 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <Link
-                    to="/login"
+                  <button
+                    onClick={() => setLoginModalOpen(true)}
                     className="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
                   >
                     Login
-                  </Link>
-                  <Link
-                    to="/register"
+                  </button>
+                  <button
+                    onClick={() => setLoginModalOpen(true)}
                     className="px-5 py-2 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg font-semibold transition-all shadow-sm hover:shadow-md"
                   >
                     Sign Up
-                  </Link>
+                  </button>
                 </>
               )}
             </div>
@@ -384,26 +386,36 @@ export default function Header() {
               ) : (
                 <>
                   <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
-                  <Link
-                    to="/login"
-                    className="px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-                    onClick={() => setMobileMenuOpen(false)}
+                  <button
+                    onClick={() => {
+                      setLoginModalOpen(true);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
                   >
                     Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="px-4 py-3 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg font-semibold transition-all"
-                    onClick={() => setMobileMenuOpen(false)}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLoginModalOpen(true);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-3 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg font-semibold transition-all"
                   >
                     Sign Up
-                  </Link>
+                  </button>
                 </>
               )}
             </nav>
           </div>
         )}
       </div>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+      />
     </header>
   );
 }

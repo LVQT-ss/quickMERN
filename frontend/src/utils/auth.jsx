@@ -26,6 +26,14 @@ export function AuthProvider({ children }) {
     return response;
   };
 
+  const googleLogin = async (credential) => {
+    const response = await api.auth.googleLogin({ credential });
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response.user));
+    setUser(response.user);
+    return response;
+  };
+
   const register = async (userData) => {
     const response = await api.auth.register(userData);
     localStorage.setItem("token", response.token);
@@ -49,6 +57,7 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     login,
+    googleLogin,
     logout,
     register,
     updateUser,
