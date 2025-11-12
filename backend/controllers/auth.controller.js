@@ -1,9 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.model.js';
-import { OAuth2Client } from 'google-auth-library';
-
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const register = async (req, res) => {
     try {
@@ -89,30 +86,35 @@ export const login = async (req, res) => {
     }
 };
 
-export const googleLogin = async (req, res) => {
+export const syncFirebaseUser = async (req, res) => {
     try {
-        const { credential } = req.body;
+        const { uid, email, displayName, photoURL } = req.body;
 
-        // Verify the Google token
-        const ticket = await client.verifyIdToken({
-            idToken: credential,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-
-        const payload = ticket.getPayload();
-        const { sub: googleId, email, name, picture } = payload;
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
 
         // Check if user exists
         let user = await User.findOne({ where: { email } });
 
         if (!user) {
-            // Create new user if doesn't exist
+            // Create new user with Firebase data
+            const username = displayName || email.split('@')[0];
+
             user = await User.create({
-                username: email.split('@')[0] + '_' + googleId.substring(0, 6),
+                username: username.replace(/\s+/g, '_'), // Replace spaces with underscore
                 email,
-                passwordHash: await bcrypt.hash(googleId, 10), // Use Google ID as password hash
-                role: 'user'
+                passwordHash: await bcrypt.hash(uid, 10), // Use Firebase UID as password hash
+                avatar: photoURL || null,
+                role: 'user',
+                bio: null
             });
+        } else {
+            // Update existing user with latest Firebase data
+            if (photoURL && !user.avatar) {
+                user.avatar = photoURL;
+                await user.save();
+            }
         }
 
         // Generate JWT token
@@ -121,17 +123,27 @@ export const googleLogin = async (req, res) => {
         });
 
         res.json({
-            message: 'Google login successful',
+            message: 'User synced successfully',
             token,
             user: {
                 id: user.id,
                 username: user.username,
                 email: user.email,
-                role: user.role
+                avatar: user.avatar,
+                role: user.role,
+                bio: user.bio
             }
         });
     } catch (error) {
-        console.error('Google login error:', error);
-        res.status(500).json({ message: 'Google authentication failed: ' + error.message });
+        console.error('Sync Firebase user error:', error);
+
+        // Handle unique constraint errors
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(400).json({
+                message: 'Username or email already exists. Please try logging in instead.'
+            });
+        }
+
+        res.status(500).json({ message: 'Failed to sync user: ' + error.message });
     }
 };

@@ -21,7 +21,7 @@ export const api = {
     auth: {
         register: (payload) => request('/auth/register', { method: 'POST', body: payload }),
         login: (payload) => request('/auth/login', { method: 'POST', body: payload }),
-        googleLogin: (payload) => request('/auth/google', { method: 'POST', body: payload })
+        syncFirebaseUser: (payload) => request('/auth/sync-firebase', { method: 'POST', body: payload })
     },
     users: {
         create: (payload) => request('/users', { method: 'POST', body: payload }),

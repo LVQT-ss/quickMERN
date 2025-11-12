@@ -233,12 +233,12 @@ export default function Header() {
                   >
                     Login
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => setLoginModalOpen(true)}
                     className="px-5 py-2 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg font-semibold transition-all shadow-sm hover:shadow-md"
                   >
                     Sign Up
-                  </button>
+                  </button> */}
                 </>
               )}
             </div>
