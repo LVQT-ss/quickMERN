@@ -17,6 +17,7 @@ import UserProfilePage from "../pages/users/profile";
 import HomePage from "../pages/HomePage";
 import About from "../pages/about";
 import Dashboard from "../pages/Dashboard";
+import ServicesPage from "../pages/Services";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/about", element: <About /> },
+      { path: "/services", element: <ServicesPage /> },
       { path: "/posts", element: <PostsListPage /> },
       {
         path: "/posts/new",
