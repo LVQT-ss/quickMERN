@@ -57,6 +57,7 @@ export default function PostDetailPage() {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [lightboxImage, setLightboxImage] = useState(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [commentCooldown, setCommentCooldown] = useState(0);
 
   useEffect(() => {
     if (!postId) {
@@ -212,6 +213,40 @@ export default function PostDetailPage() {
     return () => window.removeEventListener("keydown", handleEscape);
   }, [lightboxOpen]);
 
+  // Comment cooldown timer - check on mount and when user/postId changes
+  useEffect(() => {
+    if (!user || !postId) return;
+
+    const checkCooldown = () => {
+      const lastCommentKey = `lastComment_${postId}_${user.id}`;
+      const lastCommentTime = localStorage.getItem(lastCommentKey);
+      
+      if (lastCommentTime) {
+        const timePassed = Date.now() - parseInt(lastCommentTime, 10);
+        const cooldownMs = 60000; // 1 minute in milliseconds
+        const remaining = cooldownMs - timePassed;
+        
+        if (remaining > 0) {
+          setCommentCooldown(Math.ceil(remaining / 1000)); // Convert to seconds
+        } else {
+          setCommentCooldown(0);
+        }
+      } else {
+        setCommentCooldown(0);
+      }
+    };
+
+    // Check immediately
+    checkCooldown();
+
+    // Update countdown every second
+    const interval = setInterval(() => {
+      checkCooldown();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [user, postId]);
+
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!user) {
@@ -219,6 +254,12 @@ export default function PostDetailPage() {
       return;
     }
     if (!newComment.trim()) return;
+
+    // Check cooldown
+    if (commentCooldown > 0) {
+      setError(`Please wait ${commentCooldown} seconds before commenting again`);
+      return;
+    }
 
     setSubmittingComment(true);
     try {
@@ -229,6 +270,11 @@ export default function PostDetailPage() {
         ...(replyTo && { parent_id: replyTo.id }),
       };
       await api.comments.create(payload, token);
+
+      // Save timestamp of this comment
+      const lastCommentKey = `lastComment_${postId}_${user.id}`;
+      localStorage.setItem(lastCommentKey, Date.now().toString());
+      setCommentCooldown(60); // Set cooldown to 60 seconds
 
       // Fetch updated comments
       const updatedComments = await api.comments.listByPost(id);
@@ -1094,24 +1140,33 @@ export default function PostDetailPage() {
                         onChange={(e) => setNewComment(e.target.value)}
                         placeholder={
                           user
-                            ? "Write a comment..."
+                            ? commentCooldown > 0
+                              ? `Wait ${commentCooldown}s before commenting...`
+                              : "Write a comment..."
                             : "Please log in to comment"
                         }
-                        disabled={!user || submittingComment}
+                        disabled={!user || submittingComment || commentCooldown > 0}
                         className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent resize-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         rows="3"
                       />
-                      <div className="flex justify-end mt-2">
+                      <div className="flex justify-between items-center mt-2">
+                        {commentCooldown > 0 && (
+                          <span className="text-sm text-orange-600 dark:text-orange-400 font-medium">
+                            ⏱️ Wait {commentCooldown}s to comment again
+                          </span>
+                        )}
                         <button
                           type="submit"
                           disabled={
-                            !user || submittingComment || !newComment.trim()
+                            !user || submittingComment || !newComment.trim() || commentCooldown > 0
                           }
-                          className="flex items-center gap-2 px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex items-center gap-2 px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
                         >
                           <Send size={18} />
                           {submittingComment
                             ? "Posting..."
+                            : commentCooldown > 0
+                            ? `Wait ${commentCooldown}s`
                             : replyTo
                             ? "Post Reply"
                             : "Post Comment"}

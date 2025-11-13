@@ -152,8 +152,6 @@ const ServicesPage = () => {
         "Domain + DNS setup",
         "SSL certificate",
         "Server monitoring",
-        "Backup system",
-        "CI/CD pipeline",
       ],
       popular: true,
     },
@@ -179,7 +177,7 @@ const ServicesPage = () => {
     },
     {
       tier: "premium",
-      name: "Business Package",
+      name: "Super Combo Package",
       price: "$2500 - $5000",
       duration: "3-6 months",
       features: [
@@ -192,7 +190,6 @@ const ServicesPage = () => {
         "High-availability setup",
         "Security audit",
         "6-12 months support",
-        "Training + docs",
       ],
       popular: false,
       badge: "Most Complete",
