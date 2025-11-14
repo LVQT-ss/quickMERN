@@ -606,11 +606,19 @@ export default function PostDetailPage() {
                   {/* Author Info & Meta */}
                   <div className="flex items-center justify-between flex-wrap gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center space-x-4">
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md flex-shrink-0">
-                        {(post.User?.username ||
-                          post.User?.name ||
-                          "A")[0].toUpperCase()}
-                      </div>
+                      {post.User?.avatar ? (
+                        <img
+                          src={post.User.avatar}
+                          alt={post.User.username || "Author"}
+                          className="w-14 h-14 rounded-full object-cover shadow-md flex-shrink-0 border-2 border-gray-200 dark:border-gray-700"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md flex-shrink-0">
+                          {(post.User?.username ||
+                            post.User?.name ||
+                            "A")[0].toUpperCase()}
+                        </div>
+                      )}
                       <div>
                         <div className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
                           {post.User?.username ||
@@ -1012,11 +1020,19 @@ export default function PostDetailPage() {
               {/* Author Bio Section */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-lg p-8 mt-8 border border-blue-100 dark:border-blue-900/50">
                 <div className="flex items-start space-x-6">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg flex-shrink-0">
-                    {(post.User?.username ||
-                      post.User?.name ||
-                      "A")[0].toUpperCase()}
-                  </div>
+                  {post.User?.avatar ? (
+                    <img
+                      src={post.User.avatar}
+                      alt={post.User.username || "Author"}
+                      className="w-20 h-20 rounded-full object-cover shadow-lg flex-shrink-0 border-4 border-white dark:border-gray-800"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg flex-shrink-0">
+                      {(post.User?.username ||
+                        post.User?.name ||
+                        "A")[0].toUpperCase()}
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                       Written by{" "}
@@ -1130,9 +1146,17 @@ export default function PostDetailPage() {
                   )}
                   <form onSubmit={handleSubmitComment} className="flex gap-3">
                     <div className="flex-shrink-0">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
-                        {user ? user.username?.[0]?.toUpperCase() || "U" : "?"}
-                      </div>
+                      {user?.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt={user.username || "User"}
+                          className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                          {user ? user.username?.[0]?.toUpperCase() || "U" : "?"}
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1">
                       <textarea
@@ -1200,9 +1224,17 @@ export default function PostDetailPage() {
                         {/* Parent Comment */}
                         <div className="flex gap-4">
                           <div className="flex-shrink-0">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
-                              {(comment.User?.username || "U")[0].toUpperCase()}
-                            </div>
+                            {comment.User?.avatar ? (
+                              <img
+                                src={comment.User.avatar}
+                                alt={comment.User.username || "User"}
+                                className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                                {(comment.User?.username || "U")[0].toUpperCase()}
+                              </div>
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
@@ -1251,10 +1283,18 @@ export default function PostDetailPage() {
                                 {comment.replies.map((reply) => (
                                   <div key={reply.id} className="flex gap-3">
                                     <div className="flex-shrink-0">
-                                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-sm">
-                                        {(reply.User?.username ||
-                                          "U")[0].toUpperCase()}
-                                      </div>
+                                      {reply.User?.avatar ? (
+                                        <img
+                                          src={reply.User.avatar}
+                                          alt={reply.User.username || "User"}
+                                          className="w-8 h-8 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
+                                        />
+                                      ) : (
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-sm">
+                                          {(reply.User?.username ||
+                                            "U")[0].toUpperCase()}
+                                        </div>
+                                      )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-2 mb-1">
@@ -1382,11 +1422,19 @@ export default function PostDetailPage() {
                 About the Author
               </h3>
               <div className="flex items-center space-x-4 mb-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md flex-shrink-0">
-                  {(post.User?.username ||
-                    post.User?.name ||
-                    "A")[0].toUpperCase()}
-                </div>
+                {post.User?.avatar ? (
+                  <img
+                    src={post.User.avatar}
+                    alt={post.User.username || "Author"}
+                    className="w-16 h-16 rounded-full object-cover shadow-md flex-shrink-0 border-2 border-gray-200 dark:border-gray-700"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md flex-shrink-0">
+                    {(post.User?.username ||
+                      post.User?.name ||
+                      "A")[0].toUpperCase()}
+                  </div>
+                )}
                 <div className="min-w-0">
                   <div className="font-semibold text-gray-900 dark:text-gray-100 truncate">
                     {post.User?.username || post.User?.name || "Anonymous"}

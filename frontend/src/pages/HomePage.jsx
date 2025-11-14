@@ -107,8 +107,8 @@ export default function HomePage() {
   };
 
   // Extract YouTube video ID from featured post
-  const featuredYoutubeVideoId = featuredPost 
-    ? extractYouTubeVideoId(featuredPost.youtubeVideoUrl) 
+  const featuredYoutubeVideoId = featuredPost
+    ? extractYouTubeVideoId(featuredPost.youtubeVideoUrl)
     : null;
 
   if (loading) {
@@ -151,55 +151,53 @@ export default function HomePage() {
       {/* Hero Section */}
       {featuredPost && (
         <FadeUp>
-          <section 
-            className="relative bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-hidden"
-          >
+          <section className="relative bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-hidden">
             {/* Banner as background (if exists and no YouTube video) */}
             {featuredPost.banner && !featuredYoutubeVideoId && (
-              <div 
+              <div
                 className="absolute inset-0 opacity-5 dark:opacity-10"
                 style={{
                   backgroundImage: `url(${featuredPost.banner})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
                 }}
               />
             )}
-            
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-              <div className="grid md:grid-cols-2 gap-8 items-center">
+
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+              <div className="grid md:grid-cols-2 gap-6 sm:gap-8 items-center">
                 <div>
                   <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
                     Latest Post
                   </span>
-                  <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4 break-words line-clamp-2">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4 break-words line-clamp-2">
                     {featuredPost.title}
                   </h2>
-                  
+
                   {/* Banner image displayed here if YouTube video exists */}
                   {featuredPost.banner && featuredYoutubeVideoId && (
-                    <div className="mb-6 rounded-lg overflow-hidden shadow-md">
+                    <div className="mb-4 sm:mb-6 rounded-lg overflow-hidden shadow-md">
                       <img
                         src={featuredPost.banner}
                         alt={featuredPost.title}
-                        className="w-full h-48 object-cover"
+                        className="w-full h-40 sm:h-48 object-cover"
                       />
                     </div>
                   )}
-                  
-                  <p className="text-gray-600 dark:text-gray-400 text-lg mb-6">
+
+                  <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg mb-4 sm:mb-6 line-clamp-3">
                     {featuredPost.introduction}
                   </p>
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6">
-                    <span>
+                  <div className="flex items-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-6">
+                    <span className="truncate">
                       By{" "}
                       {featuredPost.User?.username ||
                         featuredPost.User?.name ||
                         "Anonymous"}
                     </span>
-                    <span className="mx-2">•</span>
-                    <span>
+                    <span className="mx-2 flex-shrink-0">•</span>
+                    <span className="flex-shrink-0">
                       {new Date(featuredPost.createdAt).toLocaleDateString(
                         "en-US",
                         {
@@ -210,7 +208,7 @@ export default function HomePage() {
                       )}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">
                     <div className="flex items-center gap-1">
                       <Heart size={18} className="text-red-500" />
                       <span>{featuredPost.totalLikes || 0} likes</span>
@@ -222,12 +220,12 @@ export default function HomePage() {
                   </div>
                   <Link
                     to={createPostUrl(featuredPost)}
-                    className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors inline-block"
+                    className="bg-blue-600 dark:bg-blue-500 text-white px-6 py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors inline-block text-sm sm:text-base"
                   >
                     Read More
                   </Link>
                 </div>
-                <div className="order-first md:order-last">
+                <div className="order-first md:order-last mb-6 md:mb-0">
                   {featuredYoutubeVideoId ? (
                     <div className="relative w-full pb-[56.25%] rounded-lg overflow-hidden shadow-lg bg-black">
                       <iframe
@@ -244,10 +242,10 @@ export default function HomePage() {
                     <img
                       src={featuredPost.banner}
                       alt={featuredPost.title}
-                      className="w-full h-80 object-cover rounded-lg shadow-lg"
+                      className="w-full h-48 sm:h-64 md:h-80 object-cover rounded-lg shadow-lg"
                     />
                   ) : (
-                    <div className="w-full h-80 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg shadow-lg flex items-center justify-center">
+                    <div className="w-full h-48 sm:h-64 md:h-80 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg shadow-lg flex items-center justify-center">
                       <svg
                         className="w-24 h-24 text-white opacity-50"
                         fill="none"
@@ -271,17 +269,17 @@ export default function HomePage() {
       )}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Blog Posts Grid */}
           <div className="lg:col-span-2">
             <FadeUp delay={0.2}>
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                   Latest Posts
                 </h3>
                 {searchQuery && (
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
                     {filteredPosts.length}{" "}
                     {filteredPosts.length === 1 ? "result" : "results"}
                   </span>
@@ -289,9 +287,9 @@ export default function HomePage() {
               </div>
 
               {filteredPosts.length === 0 && !featuredPost ? (
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-12 text-center">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-8 sm:p-12 text-center">
                   <svg
-                    className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4"
+                    className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -303,10 +301,10 @@ export default function HomePage() {
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                     {searchQuery ? "No posts found" : "No posts yet"}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                     {searchQuery
                       ? `No posts match "${searchQuery}"`
                       : "Check back later for new content"}
@@ -314,14 +312,14 @@ export default function HomePage() {
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery("")}
-                      className="mt-4 text-blue-600 hover:text-blue-700 font-semibold"
+                      className="mt-4 text-sm sm:text-base text-blue-600 hover:text-blue-700 font-semibold"
                     >
                       Clear search
                     </button>
                   )}
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                   {filteredPosts.map((post) => (
                     <article
                       key={post.id}
@@ -332,10 +330,10 @@ export default function HomePage() {
                         <img
                           src={post.banner}
                           alt={post.title}
-                          className="w-full h-48 object-cover flex-shrink-0"
+                          className="w-full h-40 sm:h-48 object-cover flex-shrink-0"
                         />
                       ) : (
-                        <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center flex-shrink-0">
+                        <div className="w-full h-40 sm:h-48 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center flex-shrink-0">
                           <svg
                             className="w-12 h-12 text-gray-400 dark:text-gray-600"
                             fill="none"
@@ -353,28 +351,28 @@ export default function HomePage() {
                       )}
 
                       {/* Post Content */}
-                      <div className="p-6 flex flex-col flex-1">
+                      <div className="p-4 sm:p-6 flex flex-col flex-1">
                         {/* Category Badge */}
                         {post.Categories && post.Categories.length > 0 && (
-                          <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded mb-3 w-fit">
+                          <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded mb-2 sm:mb-3 w-fit">
                             {post.Categories[0].name}
                           </span>
                         )}
 
                         {/* Title - Line clamp 2 + break-words */}
-                        <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2 break-words">
+                        <h4 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2 break-words">
                           <Link to={createPostUrl(post)}>{post.title}</Link>
                         </h4>
 
                         {/* Author & Date */}
-                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                        <div className="flex items-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-3">
                           <span className="truncate">
                             {post.User?.username ||
                               post.User?.name ||
                               "Anonymous"}
                           </span>
                           <span className="mx-2 flex-shrink-0">•</span>
-                          <span className="flex-shrink-0">
+                          <span className="flex-shrink-0 text-xs">
                             {new Date(post.createdAt).toLocaleDateString(
                               "en-US",
                               {
@@ -387,7 +385,7 @@ export default function HomePage() {
                         </div>
 
                         {/* Introduction - Line clamp 3 */}
-                        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 leading-relaxed">
+                        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 line-clamp-3 leading-relaxed">
                           {post.introduction}
                         </p>
 
@@ -395,22 +393,25 @@ export default function HomePage() {
                         <div className="flex-1"></div>
 
                         {/* Stats */}
-                        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
                           <div className="flex items-center gap-1">
                             <Eye
-                              size={16}
-                              className="text-gray-500 dark:text-gray-400"
+                              size={14}
+                              className="text-gray-500 dark:text-gray-400 sm:w-4 sm:h-4"
                             />
                             <span>{post.viewCount || 0}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Heart size={16} className="text-red-500" />
+                            <Heart
+                              size={14}
+                              className="text-red-500 sm:w-4 sm:h-4"
+                            />
                             <span>{post.totalLikes || 0}</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <MessageCircle
-                              size={16}
-                              className="text-blue-500"
+                              size={14}
+                              className="text-blue-500 sm:w-4 sm:h-4"
                             />
                             <span>{post.totalComments || 0}</span>
                           </div>
@@ -419,7 +420,7 @@ export default function HomePage() {
                         {/* Read More Link */}
                         <Link
                           to={createPostUrl(post)}
-                          className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors inline-flex items-center group"
+                          className="text-sm sm:text-base text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors inline-flex items-center group"
                         >
                           Read More
                           <svg
@@ -445,10 +446,10 @@ export default function HomePage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="space-y-8">
+          <aside className="space-y-6 sm:space-y-8">
             {/* Search */}
-            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-              <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4 sm:p-6">
+              <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
                 Search
               </h4>
               <div className="relative">
@@ -457,16 +458,16 @@ export default function HomePage() {
                   placeholder="Search posts..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full px-3 sm:px-4 py-2 pr-10 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-10 top-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="absolute right-3 top-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                     title="Clear search"
                   >
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4 sm:w-5 sm:h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -480,24 +481,26 @@ export default function HomePage() {
                     </svg>
                   </button>
                 )}
-                <button className="absolute right-3 top-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
+                {!searchQuery && (
+                  <button className="absolute right-3 top-2.5 text-gray-400 dark:text-gray-500 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
               {searchQuery && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2">
                   Found {filteredPosts.length}{" "}
                   {filteredPosts.length === 1 ? "result" : "results"}
                 </p>
@@ -507,33 +510,27 @@ export default function HomePage() {
             {/* Trending Posts (Most Liked) */}
             <FadeUp delay={0.4}>
               {trendingPosts.length > 0 && (
-                <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg">
-                  <div className="flex items-center gap-2 mb-6">
-                    <TrendingUp
-                      size={24}
-                      className="text-blue-600 dark:text-blue-400"
-                    />
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-gray-100">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4 sm:p-6">
+                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                    <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
                       Trending Posts
-                    </h3>
+                    </h4>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {trendingPosts.map((post) => (
                       <Link
                         key={post.id}
                         to={createPostUrl(post)}
-                        className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors group"
+                        className="flex items-start gap-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
                       >
-                        <span className="flex items-center gap-2 flex-1 min-w-0">
-                          <Heart
-                            size={16}
-                            className="text-red-500 flex-shrink-0"
-                          />
-                          <span className="font-medium text-slate-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">
+                        <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 line-clamp-2 break-words">
                             {post.title}
                           </span>
-                        </span>
-                        <span className="text-slate-500 dark:text-gray-400 text-sm ml-2 flex-shrink-0">
+                        </div>
+                        <span className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm ml-2 flex-shrink-0">
                           {post.totalLikes || 0}
                         </span>
                       </Link>
@@ -546,8 +543,8 @@ export default function HomePage() {
             {/* Recent Posts */}
             <FadeUp delay={0.5}>
               {recentPosts.length > 0 && (
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-                  <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4 sm:p-6">
+                  <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
                     Recent Posts
                   </h4>
                   <ul className="space-y-3">
@@ -555,10 +552,12 @@ export default function HomePage() {
                       <li key={post.id}>
                         <Link
                           to={createPostUrl(post)}
-                          className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          className="block p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
                         >
-                          <div className="font-medium">{post.title}</div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 line-clamp-2 break-words mb-1">
+                            {post.title}
+                          </div>
+                          <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                             {new Date(post.createdAt).toLocaleDateString(
                               "en-US",
                               {
@@ -579,8 +578,8 @@ export default function HomePage() {
             {/* Categories */}
             <FadeUp delay={0.6}>
               {categories.length > 0 && (
-                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-                  <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4 sm:p-6">
+                  <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
                     Categories
                   </h4>
                   <ul className="space-y-2">
@@ -590,10 +589,12 @@ export default function HomePage() {
                         <li key={category.id}>
                           <Link
                             to={`/posts?category=${category.id}`}
-                            className="flex justify-between items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1"
+                            className="flex justify-between items-center gap-2 text-sm sm:text-base text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1.5 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
                           >
-                            <span>{category.name}</span>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                            <span className="truncate min-w-0">
+                              {category.name}
+                            </span>
+                            <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex-shrink-0 font-medium">
                               ({count})
                             </span>
                           </Link>

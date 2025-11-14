@@ -20,6 +20,8 @@ import Dashboard from "../pages/Dashboard";
 import ServicesPage from "../pages/Services";
 import PolicyPage from "../pages/PolicyPage";
 import TermsPage from "../pages/TermsPage";
+import NotFoundPage from "../pages/NotFoundPage";
+
 const router = createBrowserRouter([
   {
     element: (
@@ -112,6 +114,9 @@ const router = createBrowserRouter([
         ),
       },
       { path: "/:category/:idSlug", element: <PostDetailPage /> },
+      
+      // Catch-all route cho 404 - PHẢI Ở CUỐI CÙNG
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ]);

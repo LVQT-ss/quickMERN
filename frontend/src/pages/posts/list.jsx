@@ -137,12 +137,12 @@ export default function PostsListPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-700 dark:to-pink-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
               Explore Our Articles
             </h1>
-            <p className="text-xl text-blue-100 dark:text-purple-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-blue-100 dark:text-purple-100 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
               Discover insightful content, tutorials, and stories from our
               community of writers
             </p>
@@ -152,19 +152,19 @@ export default function PostsListPage() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search articles by title or content..."
+                  placeholder="Search articles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-6 py-4 pr-32 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-600 shadow-lg"
+                  className="w-full px-4 sm:px-6 py-3 sm:py-4 pr-12 sm:pr-14 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-600 shadow-lg text-sm sm:text-base"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-20 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                     title="Clear search"
                   >
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4 sm:w-5 sm:h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -178,21 +178,23 @@ export default function PostsListPage() {
                     </svg>
                   </button>
                 )}
-                <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full transition-colors">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
+                {!searchQuery && (
+                  <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -201,13 +203,13 @@ export default function PostsListPage() {
 
       {/* Filters & Actions Bar */}
       <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
             {/* Filters */}
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {user && (
                 <select
-                  className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 sm:px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                   value={status}
                   onChange={(e) =>
                     setSearchParams((prev) => {
@@ -226,7 +228,7 @@ export default function PostsListPage() {
               )}
 
               <select
-                className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="px-3 sm:px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base min-w-0"
                 value={category}
                 onChange={(e) =>
                   setSearchParams((prev) => {
@@ -247,7 +249,7 @@ export default function PostsListPage() {
               </select>
 
               {/* Results Counter */}
-              <span className="text-sm text-gray-600 dark:text-gray-400 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 px-2 sm:px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg whitespace-nowrap">
                 {filteredPosts.length}{" "}
                 {filteredPosts.length === 1 ? "article" : "articles"}
               </span>
@@ -257,10 +259,10 @@ export default function PostsListPage() {
             {user && (
               <Link
                 to="/posts/new"
-                className="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-sm"
+                className="inline-flex items-center px-4 sm:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-sm text-sm sm:text-base"
               >
                 <svg
-                  className="w-5 h-5 mr-2"
+                  className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -272,7 +274,8 @@ export default function PostsListPage() {
                     d="M12 4v16m8-8H4"
                   />
                 </svg>
-                Write Article
+                <span className="hidden sm:inline">Write Article</span>
+                <span className="sm:hidden">Write</span>
               </Link>
             )}
           </div>
@@ -280,12 +283,12 @@ export default function PostsListPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Loading State */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-400 font-medium">
+          <div className="flex flex-col items-center justify-center py-16 sm:py-20">
+            <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-4 border-blue-600 mb-4"></div>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium">
               Loading articles...
             </p>
           </div>
@@ -314,7 +317,7 @@ export default function PostsListPage() {
         {/* Posts Grid */}
         {!loading && filteredPosts.length > 0 && (
           <FadeUp>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {filteredPosts.map((post, index) => (
                 <article
                   key={post.id}
@@ -369,10 +372,10 @@ export default function PostsListPage() {
                   )}
 
                   {/* Post Content - THÊM flex-1 và flex flex-col */}
-                  <div className="p-6 flex flex-col flex-1">
+                  <div className="p-4 sm:p-6 flex flex-col flex-1">
                     {/* Meta Info - KHÔNG THAY ĐỔI */}
-                    <div className="flex items-center gap-2 mb-4 flex-wrap">
-                      <time className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                    <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
+                      <time className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex items-center">
                         <svg
                           className="w-4 h-4 mr-1"
                           fill="none"
@@ -420,13 +423,13 @@ export default function PostsListPage() {
                     )}
 
                     {/* Title - THÊM word-break và line-clamp-2 */}
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors break-words">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors break-words">
                       <Link to={createPostUrl(post)}>{post.title}</Link>
                     </h3>
 
                     {/* Introduction - GIỮ line-clamp-3 */}
                     {post.introduction && (
-                      <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4 leading-relaxed">
+                      <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm line-clamp-3 mb-3 sm:mb-4 leading-relaxed">
                         {post.introduction}
                       </p>
                     )}
@@ -435,14 +438,14 @@ export default function PostsListPage() {
                     <div className="flex-1"></div>
 
                     {/* Like and Comment Stats - KHÔNG THAY ĐỔI */}
-                    <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <button
                         onClick={(e) => {
                           e.preventDefault();
                           handleLikeToggle(post.id);
                         }}
                         disabled={likingPosts.has(post.id)}
-                        className={`flex items-center gap-1.5 text-sm transition-colors ${
+                        className={`flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm transition-colors ${
                           userLikes.has(post.id)
                             ? "text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400"
                             : "text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500"
@@ -460,9 +463,9 @@ export default function PostsListPage() {
                         }
                       >
                         <Heart
-                          size={18}
+                          size={16}
                           className={
-                            userLikes.has(post.id) ? "fill-current" : ""
+                            userLikes.has(post.id) ? "fill-current sm:w-[18px] sm:h-[18px]" : "sm:w-[18px] sm:h-[18px]"
                           }
                         />
                         <span className="font-medium">
@@ -471,9 +474,9 @@ export default function PostsListPage() {
                       </button>
                       <Link
                         to={`${createPostUrl(post)}#comments`}
-                        className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
-                        <MessageCircle size={18} />
+                        <MessageCircle size={16} className="sm:w-[18px] sm:h-[18px]" />
                         <span className="font-medium">
                           {post.totalComments || 0}
                         </span>
@@ -481,14 +484,14 @@ export default function PostsListPage() {
                     </div>
 
                     {/* Author & Read More - LÚC NÀO CŨNG Ở DƯỚI CÙNG */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+                    <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100 dark:border-gray-800">
                       <div className="flex items-center space-x-2 min-w-0 flex-1 mr-2">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0">
                           {(post.User?.username ||
                             post.User?.name ||
                             "A")[0].toUpperCase()}
                         </div>
-                        <span className="text-sm text-gray-700 dark:text-gray-300 font-medium truncate">
+                        <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium truncate">
                           {post.User?.username ||
                             post.User?.name ||
                             "Anonymous"}
@@ -496,11 +499,12 @@ export default function PostsListPage() {
                       </div>
                       <Link
                         to={createPostUrl(post)}
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold text-sm inline-flex items-center flex-shrink-0"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold text-xs sm:text-sm inline-flex items-center flex-shrink-0"
                       >
-                        Read More
+                        <span className="hidden sm:inline">Read More</span>
+                        <span className="sm:hidden">Read</span>
                         <svg
-                          className="w-4 h-4 ml-1"
+                          className="w-3 h-3 sm:w-4 sm:h-4 ml-1"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -523,9 +527,9 @@ export default function PostsListPage() {
 
         {/* Empty State */}
         {!loading && filteredPosts.length === 0 && (
-          <div className="text-center py-20">
+          <div className="text-center py-16 sm:py-20 px-4">
             <svg
-              className="w-24 h-24 mx-auto text-gray-400 dark:text-gray-600 mb-6"
+              className="w-16 h-16 sm:w-24 sm:h-24 mx-auto text-gray-400 dark:text-gray-600 mb-4 sm:mb-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -537,10 +541,10 @@ export default function PostsListPage() {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               {searchQuery ? "No articles found" : "No articles yet"}
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
               {searchQuery
                 ? `No articles match "${searchQuery}". Try a different search term.`
                 : "Start by creating your first blog post and share your knowledge with the world."}

@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../utils/auth.jsx";
 import { useTheme } from "../utils/ThemeContext.jsx";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Eye } from "lucide-react";
 import LoginModal from "./LoginModal.jsx";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
 
@@ -17,74 +18,77 @@ export default function Header() {
     navigate("/");
   };
 
+  // Helper function to check if a path is active
+  const isActive = (path) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+    return location.pathname.startsWith(path);
+  };
+
+  // Navigation items
+  const navItems = [
+    { path: "/", label: "Home" },
+    { path: "/posts", label: "Articles" },
+    { path: "/about", label: "About" },
+    { path: "/services", label: "Services" },
+  ];
+
   return (
     <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo with Counter */}
           <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center group logo-float">
-              <div className="text-3xl font-bold bg-gradient-to-r from-yellow-600 via-pink-500 to-indigo-600 bg-clip-text text-transparent group-hover:from-blue-700 group-hover:to-indigo-700 transition-all logo-gradient-animate group-hover:scale-110 transform duration-300">
-                TheRawCoder
+            {/* Enhanced Logo */}
+            <Link to="/" className="flex items-center group relative">
+              <div className="relative">
+                <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                  TheRawCoder
+                </div>
+                {/* Animated underline */}
+                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></div>
               </div>
             </Link>
 
-            {/* Visitor Counter with Animation */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-full border border-blue-200 dark:border-gray-600 hover:shadow-lg hover:scale-105 transition-all duration-300 group/counter">
-              {/* Animated Eye Icon with Blink */}
+            {/* Enhanced Visitor Counter */}
+            {/* <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full border-2 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 group">
               <div className="relative">
-                <svg
-                  className="w-4 h-4 text-blue-600 dark:text-blue-400 eye-look"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    className="eye-blink"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  />
-                </svg>
+                <Eye size={16} className="text-blue-600 dark:text-blue-400" />
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               </div>
-
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 group-hover/counter:text-blue-600 dark:group-hover/counter:text-blue-400 transition-colors">
-                5.2K
-              </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                visitors
-              </span>
-            </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-lg font-bold text-gray-900 dark:text-gray-100 tabular-nums">
+                  5.2K
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  visitors
+                </span>
+              </div>
+            </div> */}
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1">
-            <Link
-              to="/"
-              className="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-            >
-              Home
-            </Link>
-            <Link
-              to="/posts"
-              className="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-            >
-              Articles
-            </Link>
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="relative px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all duration-300 group"
+              >
+                <span className="relative z-10">{item.label}</span>
 
-            <Link
-              to="/services"
-              className="px-4 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-            >
-              Services
-            </Link>
+                {/* Background on hover */}
+                <div className="absolute inset-0 bg-blue-50 dark:bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                {/* Animated underline - shows on hover and stays on active page */}
+                <div
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 ${
+                    isActive(item.path) ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                ></div>
+              </Link>
+            ))}
 
             {/* Theme Toggle */}
             <button
@@ -102,7 +106,7 @@ export default function Header() {
                   {user.role === "admin" && (
                     <Link
                       to="/posts/new"
-                      className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg font-semibold transition-all inline-flex items-center"
+                      className="px-4 py-2 text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold transition-all inline-flex items-center shadow-sm hover:shadow-md transform hover:scale-105"
                     >
                       <svg
                         className="w-4 h-4 mr-2"
@@ -122,7 +126,7 @@ export default function Header() {
                   )}
                   <div className="relative group">
                     <button className="flex items-center space-x-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden ring-2 ring-transparent group-hover:ring-blue-400 dark:group-hover:ring-blue-600 transition-all">
                         {user.avatar ? (
                           <img
                             src={user.avatar}
@@ -143,7 +147,7 @@ export default function Header() {
                         </span>
                       </div>
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 transition-transform group-hover:rotate-180 duration-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -156,15 +160,28 @@ export default function Header() {
                         />
                       </svg>
                     </button>
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+
+                    {/* Enhanced Dropdown Menu */}
+                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform group-hover:translate-y-0 -translate-y-2 duration-300">
+                      {/* User info header */}
+                      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                        <div className="font-semibold text-gray-900 dark:text-gray-100 text-sm truncate">
+                          {user.username || user.name}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                          {user.role}
+                        </div>
+                      </div>
+
+                      {/* Menu items */}
                       {user.role === "admin" && (
                         <Link
                           to="/dashboard"
-                          className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         >
-                          <div className="flex items-center gap-2">
+                          <div className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
                             <svg
-                              className="w-4 h-4"
+                              className="w-4 h-4 text-blue-600 dark:text-blue-400"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -176,17 +193,17 @@ export default function Header() {
                                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                               />
                             </svg>
-                            Dashboard
                           </div>
+                          <span className="font-medium">Dashboard</span>
                         </Link>
                       )}
                       <Link
                         to="/profile"
-                        className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="p-1.5 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
                           <svg
-                            className="w-4 h-4"
+                            className="w-4 h-4 text-purple-600 dark:text-purple-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -198,30 +215,33 @@ export default function Header() {
                               d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                             />
                           </svg>
-                          Profile
                         </div>
+                        <span className="font-medium">Profile</span>
                       </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                      >
-                        <div className="flex items-center gap-2">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                            />
-                          </svg>
-                          Logout
-                        </div>
-                      </button>
+
+                      <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        >
+                          <div className="p-1.5 bg-red-50 dark:bg-red-900/30 rounded-lg">
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                              />
+                            </svg>
+                          </div>
+                          <span className="font-medium">Logout</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -233,12 +253,12 @@ export default function Header() {
                   >
                     Login
                   </button>
-                  {/* <button
+                  <button
                     onClick={() => setLoginModalOpen(true)}
-                    className="px-5 py-2 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg font-semibold transition-all shadow-sm hover:shadow-md"
+                    className="px-5 py-2 text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold transition-all shadow-sm hover:shadow-md transform hover:scale-105"
                   >
                     Sign Up
-                  </button> */}
+                  </button>
                 </>
               )}
             </div>
@@ -283,30 +303,32 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700 animate-fadeIn">
+          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
             <nav className="flex flex-col space-y-1">
-              <Link
-                to="/"
-                className="px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                to="/posts"
-                className="px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Articles
-              </Link>
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`relative px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all ${
+                    isActive(item.path)
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-gray-800"
+                      : ""
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="flex items-center justify-between">
+                    {item.label}
+                    {isActive(item.path) && (
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600"></div>
+                    )}
+                  </span>
 
-              <Link
-                to="/about"
-                className="px-4 py-3 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                About
-              </Link>
+                  {/* Active indicator line for mobile */}
+                  {isActive(item.path) && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-600 to-purple-600 rounded-r-full"></div>
+                  )}
+                </Link>
+              ))}
 
               <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
 
@@ -346,7 +368,7 @@ export default function Header() {
                       </Link>
                       <Link
                         to="/posts/new"
-                        className="px-4 py-3 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg font-semibold transition-all inline-flex items-center"
+                        className="px-4 py-3 text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold transition-all inline-flex items-center shadow-sm"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         <svg
@@ -400,7 +422,7 @@ export default function Header() {
                       setLoginModalOpen(true);
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full text-left px-4 py-3 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg font-semibold transition-all"
+                    className="w-full text-left px-4 py-3 text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold transition-all shadow-sm"
                   >
                     Sign Up
                   </button>
